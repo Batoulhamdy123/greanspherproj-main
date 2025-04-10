@@ -84,6 +84,12 @@ flutter:
     - assets/fonts/
     
   #   - images/a_dot_ham.jpeg
+flutter_native_splash:
+  color: "#ffffff"              # لون الخلفية (غيريه لو حابة)
+  image: assets\images\splashscreen.png      # الصورة اللي هتظهر
+  android: true
+  ios: true
+  web: true
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

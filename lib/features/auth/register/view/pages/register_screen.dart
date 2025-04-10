@@ -65,163 +65,168 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Scaffold(
           backgroundColor: ColorManager.white,
           body: SafeArea(
-            child: ListView(children: [
-              Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Image.asset(
-                        AppAssets.loginScreen,
-                        height: 160,
-                        width: 180,
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
-                      child: Text(
-                        "Sign Up ",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                          fontSize: 25,
-                        ),
-                        textAlign: TextAlign.start,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 50),
-                      child: Text(
-                        "create an account to continue   ",
-                        style: TextStyle(fontSize: 15),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    TextFormFieldItem(
-                      label: " First Name ",
-                      controller:
-                          RegisterScreenCubit.get(context).firstNameController,
-                      prefixIcon: const Icon(Icons.account_circle),
-                      keyboardType: TextInputType.name,
-                      validator: MyValidation.validateName,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    TextFormFieldItem(
-                      label: " Last Name ",
-                      controller:
-                          RegisterScreenCubit.get(context).lastNameController,
-                      prefixIcon: const Icon(Icons.account_circle),
-                      keyboardType: TextInputType.name,
-                      validator: MyValidation.validateName,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    TextFormFieldItem(
-                      label: " User Name ",
-                      controller:
-                          RegisterScreenCubit.get(context).userNameController,
-                      prefixIcon: const Icon(Icons.account_circle),
-                      keyboardType: TextInputType.name,
-                      validator: MyValidation.validateName,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    TextFormFieldItem(
-                      label: " Email ",
-                      controller:
-                          RegisterScreenCubit.get(context).emailController,
-                      prefixIcon: const Icon(Icons.email),
-                      keyboardType: TextInputType.name,
-                      validator: MyValidation.validateEmail,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    TextFormFieldItem(
-                      label: " Password ",
-                      controller:
-                          RegisterScreenCubit.get(context).passwordController,
-                      prefixIcon: const Icon(Icons.lock),
-                      keyboardType: TextInputType.name,
-                      validator: MyValidation.validatePassword,
-                      edgeInsetsGeometry:
-                          const EdgeInsets.symmetric(vertical: 16.0),
-                      obscureText: _obscureText,
-                      obscuringCharacter: '*',
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscureText
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _obscureText = !_obscureText;
-                          });
-                        },
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    TextFormFieldItem(
-                      label: " Confirm Password ",
-                      controller: RegisterScreenCubit.get(context)
-                          .confirmPasswordController,
-                      prefixIcon: const Icon(Icons.lock),
-                      keyboardType: TextInputType.name,
-                      validator: (val) => MyValidation.validateConfirmPassword(
-                          val,
-                          RegisterScreenCubit.get(context)
-                              .passwordController
-                              .text),
-                      edgeInsetsGeometry:
-                          const EdgeInsets.symmetric(vertical: 16.0),
-                      obscureText: _obscureText2,
-                      obscuringCharacter: '*',
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscureText2
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _obscureText2 = !_obscureText2;
-                          });
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          RegisterScreenCubit.get(context).register();
-                        },
-                        child: const Text(
-                          "Sign Up ",
-                          style: TextStyle(color: Colors.white, fontSize: 23),
-                          textAlign: TextAlign.center,
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 100, vertical: 10),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+            child: ListView(
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+                children: [
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Image.asset(
+                            AppAssets.loginScreen,
+                            height: 160,
+                            width: 180,
                           ),
                         ),
-                      ),
-                      /*SizedBox(
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 30),
+                          child: Text(
+                            "Sign Up ",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontSize: 25,
+                            ),
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 50),
+                          child: Text(
+                            "create an account to continue   ",
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        TextFormFieldItem(
+                          label: " First Name ",
+                          controller: RegisterScreenCubit.get(context)
+                              .firstNameController,
+                          prefixIcon: const Icon(Icons.account_circle),
+                          keyboardType: TextInputType.name,
+                          validator: MyValidation.validateName,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        TextFormFieldItem(
+                          label: " Last Name ",
+                          controller: RegisterScreenCubit.get(context)
+                              .lastNameController,
+                          prefixIcon: const Icon(Icons.account_circle),
+                          keyboardType: TextInputType.name,
+                          validator: MyValidation.validateName,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        TextFormFieldItem(
+                          label: " User Name ",
+                          controller: RegisterScreenCubit.get(context)
+                              .userNameController,
+                          prefixIcon: const Icon(Icons.account_circle),
+                          keyboardType: TextInputType.name,
+                          validator: MyValidation.validateName,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        TextFormFieldItem(
+                          label: " Email ",
+                          controller:
+                              RegisterScreenCubit.get(context).emailController,
+                          prefixIcon: const Icon(Icons.email),
+                          keyboardType: TextInputType.name,
+                          validator: MyValidation.validateEmail,
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        TextFormFieldItem(
+                          label: " Password ",
+                          controller: RegisterScreenCubit.get(context)
+                              .passwordController,
+                          prefixIcon: const Icon(Icons.lock),
+                          keyboardType: TextInputType.name,
+                          validator: MyValidation.validatePassword,
+                          edgeInsetsGeometry:
+                              const EdgeInsets.symmetric(vertical: 16.0),
+                          obscureText: _obscureText,
+                          obscuringCharacter: '*',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureText
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        TextFormFieldItem(
+                          label: " Confirm Password ",
+                          controller: RegisterScreenCubit.get(context)
+                              .confirmPasswordController,
+                          prefixIcon: const Icon(Icons.lock),
+                          keyboardType: TextInputType.name,
+                          validator: (val) =>
+                              MyValidation.validateConfirmPassword(
+                                  val,
+                                  RegisterScreenCubit.get(context)
+                                      .passwordController
+                                      .text),
+                          edgeInsetsGeometry:
+                              const EdgeInsets.symmetric(vertical: 16.0),
+                          obscureText: _obscureText2,
+                          obscuringCharacter: '*',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureText2
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscureText2 = !_obscureText2;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              RegisterScreenCubit.get(context).register();
+                            },
+                            child: const Text(
+                              "Sign Up ",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 23),
+                              textAlign: TextAlign.center,
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 100, vertical: 10),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                            ),
+                          ),
+                          /*SizedBox(
                         height: AppSize.s60.h,
                         width: MediaQuery.of(context).size.width * .9,
                         child: CustomElevatedButton(
@@ -234,8 +239,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           },
                         ),
                       ),*/
-                    ),
-                    /*
+                        ),
+                        /*
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -249,82 +254,83 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Text('Log in'),
               ),
             ),*/
-                    const SizedBox(height: 10),
-                    const Row(
-                      children: [
-                        Expanded(
-                            child: Divider(
-                          indent: 15,
-                          color: Colors.grey,
-                          thickness: 1.0,
-                        )),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text('or sign up with'),
+                        const SizedBox(height: 10),
+                        const Row(
+                          children: [
+                            Expanded(
+                                child: Divider(
+                              indent: 15,
+                              color: Colors.grey,
+                              thickness: 1.0,
+                            )),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text('or sign up with'),
+                            ),
+                            Expanded(
+                                child: Divider(
+                              endIndent: 15,
+                              color: Colors.grey,
+                              thickness: 1.0,
+                            )),
+                          ],
                         ),
-                        Expanded(
-                            child: Divider(
-                          endIndent: 15,
-                          color: Colors.grey,
-                          thickness: 1.0,
-                        )),
-                      ],
-                    ),
-                    SizedBox(height: 15),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          icon: Icon(
-                            Icons.facebook,
-                            color: Color.fromARGB(255, 19, 81, 132),
-                            size: 47,
-                          ),
-                          onPressed: () {},
+                        SizedBox(height: 15),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.facebook,
+                                color: Color.fromARGB(255, 19, 81, 132),
+                                size: 47,
+                              ),
+                              onPressed: () {},
+                            ),
+                            SizedBox(width: 30),
+                            GestureDetector(
+                              onTap: () {
+                                // Google login action
+                              },
+                              child: Container(
+                                  height: 40,
+                                  width: 40,
+                                  child:
+                                      Image.asset("assets/images/google.png")),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 30),
-                        GestureDetector(
-                          onTap: () {
-                            // Google login action
-                          },
-                          child: Container(
-                              height: 40,
-                              width: 40,
-                              child: Image.asset("assets/images/google.png")),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 1),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "already have an account ? ",
-                          style: TextStyle(fontSize: 15),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) => LoginPage()),
-                            // );
-                          },
-                          // Navigate to sign up screen
+                        SizedBox(height: 1),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "already have an account ? ",
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //       builder: (context) => LoginPage()),
+                                // );
+                              },
+                              // Navigate to sign up screen
 
-                          child: Text(
-                            'Log in',
-                            style: TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18),
-                          ),
+                              child: Text(
+                                'Log in',
+                                style: TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18),
+                              ),
+                            ),
+                            //Padding(padding: EdgeInsets.fromLTRB(45, 738.11, 35, 110),child: ,)
+                          ],
                         ),
-                        //Padding(padding: EdgeInsets.fromLTRB(45, 738.11, 35, 110),child: ,)
-                      ],
-                    ),
-                  ]),
-            ]),
+                      ]),
+                ]),
           ),
         ));
   }
