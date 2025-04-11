@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greanspherproj/core/utilities/dialog_utils.dart';
 import 'package:greanspherproj/features/dashboard/controller/cubit/dashboardcubit_cubit.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Component/view/ComponentPage.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Home/view/home_screen.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Notification/view/NotificationPage.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Profile/view/ProfilePage.dart';
 
@@ -24,7 +25,7 @@ class DahboardPage extends StatelessWidget {
               controller: controller.pageController,
               onPageChanged: controller.OnChangeTabIndex,
               children: [
-                HomePage(),
+                HomeScreen(),
                 ComponentPage(),
                 NotificationsPage(),
                 ProfileScreen(

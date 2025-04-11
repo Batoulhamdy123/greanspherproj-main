@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:greanspherproj/di/di.dart';
 import 'package:greanspherproj/features/auth/register/controller/cubit/signupcubit_cubit.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Home/view/home_screen.dart';
+import 'package:greanspherproj/features/dashboard/view/dashboardpage.dart';
 
 import 'core/bloc_observer/bloc_observer.dart';
 import 'features/auth/register/view/pages/register_screen.dart';
@@ -38,7 +40,7 @@ class MyApp extends StatelessWidget {
             locale: DevicePreview.locale(context),
             builder: DevicePreview.appBuilder,
             debugShowCheckedModeBanner: false,
-            home: RegisterScreen(),
+            home: DahboardPage(),
           );
         });
   }

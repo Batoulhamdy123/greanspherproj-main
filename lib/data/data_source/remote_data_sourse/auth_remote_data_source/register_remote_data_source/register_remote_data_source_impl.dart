@@ -3,6 +3,9 @@ import 'package:dartz/dartz.dart';
 import 'package:greanspherproj/data/api_manager/api_manager.dart';
 import 'package:greanspherproj/data/api_manager/end_points.dart';
 import 'package:greanspherproj/data/data_source/remote_data_sourse/auth_remote_data_source/register_remote_data_source/register_remote_data_source.dart';
+import 'package:greanspherproj/data/model/LoginResponseDto%20.dart';
+import 'package:greanspherproj/domain/entities/LoginResponseEntity%20.dart';
+//import 'package:greanspherproj/data/data_source/remote_data_sourse/auth_remote_data_source/register_remote_data_source/register_remote_data_source.dart';
 import 'package:greanspherproj/domain/failures.dart';
 import 'package:injectable/injectable.dart';
 
@@ -49,7 +52,38 @@ class RegisterRemoteDataSourceImpl implements RegisterRemoteDataSource {
           return Left(ServerError(errorMessage: registerResponse.message!));
         }
       } else {
+        return Left(NetworkError(errorMessage: AppConstants.networkError));
+      }
+    } catch (e) {
+      return Left(Failures(errorMessage: e.toString()));
+    }
+  }
 
+  @override
+  Future<Either<Failures, LoginResponseDto>> Login(
+      String email, String password) async {
+    try {
+      var checkResult = await Connectivity().checkConnectivity();
+      if (checkResult.contains(ConnectivityResult.wifi) ||
+          checkResult.contains(ConnectivityResult.mobile)) {
+        var response = await apiManager.postData(
+          EndPoints.login,
+          body: {
+            "email": email,
+            "password": password,
+          },
+          headers: {
+            "x-api-key": EndPoints.apiKey,
+            "Content-Type": 'application/json'
+          },
+        );
+        var LoginResponse = LoginResponseDto.fromJson(response.data);
+        if (response.statusCode! >= 200 && response.statusCode! < 300) {
+          return Right(LoginResponse);
+        } else {
+          return Left(ServerError(errorMessage: LoginResponse.message!));
+        }
+      } else {
         return Left(NetworkError(errorMessage: AppConstants.networkError));
       }
     } catch (e) {

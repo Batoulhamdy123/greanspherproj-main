@@ -1,5 +1,8 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:greanspherproj/data/data_source/remote_data_sourse/auth_remote_data_source/register_remote_data_source/register_remote_data_source.dart';
+import 'package:greanspherproj/domain/entities/LoginResponseEntity%20.dart';
+//import 'package:greanspherproj/data/data_source/remote_data_sourse/auth_remote_data_source/register_remote_data_source/register_remote_data_source.dart';
 import 'package:greanspherproj/domain/entities/RegisterResponseEntity.dart';
 import 'package:greanspherproj/domain/failures.dart';
 import 'package:greanspherproj/domain/repository/RegisterRepositoryContract.dart';
@@ -21,5 +24,15 @@ class RegisterRepositoryImpl implements RegisterRepositoryContract {
     var either = await registerRemoteDataSource.register(
         firstName, lastName, userName, email, password, confirmPassword);
     return either.fold((error) => Left(error), (response) => Right(response));
+  }
+
+  Future<Either<Failures, LoginResponseEntity>> Login(
+    String email,
+    String password,
+  ) async {
+    var either = await registerRemoteDataSource.Login(email, password);
+    return either.fold((e) => left(e), (Response) => Right(Response));
+
+    ///return null;
   }
 }
