@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:greanspherproj/domain/entities/LoginResponseEntity%20.dart';
-import 'package:greanspherproj/domain/entities/RegisterResponseEntity.dart';
 import 'package:greanspherproj/domain/failures.dart';
+
+import '../entities/RegisterResponseEntity.dart';
 
 abstract class RegisterRepositoryContract {
   Future<Either<Failures, RegisterResponseEntity>> register(
@@ -11,8 +11,4 @@ abstract class RegisterRepositoryContract {
       String email,
       String password,
       String confirmPassword);
-  Future<Either<Failures, LoginResponseEntity>> Login(
-    String email,
-    String password,
-  );
 }

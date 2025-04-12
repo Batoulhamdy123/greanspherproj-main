@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:greanspherproj/di/di.dart';
+import 'package:greanspherproj/features/auth/login/view/pages/login_screen.dart';
 import 'package:greanspherproj/features/auth/register/controller/cubit/signupcubit_cubit.dart';
-import 'package:greanspherproj/features/dashboard/modelus/Home/view/home_screen.dart';
-import 'package:greanspherproj/features/dashboard/view/dashboardpage.dart';
 
 import 'core/bloc_observer/bloc_observer.dart';
-import 'features/auth/register/view/pages/register_screen.dart';
+import 'features/auth/login/controller/cubit/logincubit_cubit.dart';
 
 void main() {
   configureDependencies();
@@ -18,6 +17,7 @@ void main() {
     builder: (context) => MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => getIt<RegisterScreenCubit>()),
+        BlocProvider(create: (context) => getIt<LoginScreenCubit>()),
       ],
       child: const MyApp(),
     ),
@@ -36,12 +36,10 @@ class MyApp extends StatelessWidget {
         splitScreenMode: true,
         builder: (_, child) {
           return MaterialApp(
-            // useInheritedMediaQuery: true,
             locale: DevicePreview.locale(context),
             builder: DevicePreview.appBuilder,
             debugShowCheckedModeBanner: false,
-            home: DahboardPage(),
-          );
+              home: LoginScreen());
         });
   }
 }

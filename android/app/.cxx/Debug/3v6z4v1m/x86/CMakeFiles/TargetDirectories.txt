@@ -1,0 +1,2 @@
+E:/App/greanspherproj-main/android/app/.cxx/Debug/3v6z4v1m/x86/CMakeFiles/edit_cache.dir
+E:/App/greanspherproj-main/android/app/.cxx/Debug/3v6z4v1m/x86/CMakeFiles/rebuild_cache.dir

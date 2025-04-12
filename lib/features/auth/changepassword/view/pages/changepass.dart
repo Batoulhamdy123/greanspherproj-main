@@ -1,6 +1,6 @@
 // import 'package:greanspherproj/features/auth/changepassword/view/component/customwidget.dart';
 // import 'package:greanspherproj/features/auth/forgetpassword/view/imageforget.dart';
-// import 'package:greanspherproj/features/auth/login/view/pages/loginpage.dart';
+// import 'package:greanspherproj/features/auth/login/view/pages/login_screen.dart';
 // import 'package:flutter/material.dart';
 // import '../../../register/controller/cubit/signupcubit_cubit.dart';
 //

@@ -1,7 +1,7 @@
 class RegisterResponseEntity {
   String? type;
   List<String>? errors;
-  DataEntity? data;
+  DataRegisterEntity? data;
   String? statusCode;
   bool? succeeded;
   String? message;
@@ -16,11 +16,11 @@ class RegisterResponseEntity {
   });
 }
 
-class DataEntity {
+class DataRegisterEntity {
   String? userId;
   bool? isActivateRequired;
 
-  DataEntity({
+  DataRegisterEntity({
     this.userId,
     this.isActivateRequired,
   });

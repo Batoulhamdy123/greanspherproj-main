@@ -1,21 +1,21 @@
 import 'package:dartz/dartz.dart';
-import 'package:greanspherproj/domain/entities/LoginResponseEntity%20.dart';
-import 'package:greanspherproj/domain/entities/RegisterResponseEntity.dart';
 import 'package:greanspherproj/domain/failures.dart';
-import 'package:greanspherproj/domain/repository/RegisterRepositoryContract.dart';
 import 'package:injectable/injectable.dart';
+
+import '../entities/LoginResponseEntity .dart';
+import '../repository/LoginRepositoryContract.dart';
 
 @injectable
 class LoginUseCase {
-  RegisterRepositoryContract LoginRepository;
+  LoginRepositoryContract loginRepository;
 
-  LoginUseCase({required this.LoginRepository});
+  LoginUseCase({required this.loginRepository});
 
   Future<Either<Failures, LoginResponseEntity>> invoke(
     String email,
     String password,
   ) {
-    return LoginRepository.Login(
+    return loginRepository.login(
       email,
       password,
     );

@@ -9,20 +9,20 @@ class RegisterResponseDto extends RegisterResponseEntity {
   });
 
   RegisterResponseDto.fromJson(dynamic json) {
-    data = json['data'] != null ? DataDto.fromJson(json['data']) : null;
+    data = json['data'] != null ? DataRegisterDto.fromJson(json['data']) : null;
     statusCode = json['statusCode'];
     succeeded = json['succeeded'];
     message = json['message'];
   }
 }
 
-class DataDto extends DataEntity {
-  DataDto({
+class DataRegisterDto extends DataRegisterEntity {
+  DataRegisterDto({
     super.userId,
     super.isActivateRequired,
   });
 
-  DataDto.fromJson(dynamic json) {
+  DataRegisterDto.fromJson(dynamic json) {
     userId = json['userId'];
     isActivateRequired = json['isActivateRequired'];
   }

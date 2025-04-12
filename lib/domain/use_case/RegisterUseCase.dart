@@ -1,8 +1,9 @@
 import 'package:dartz/dartz.dart';
-import 'package:greanspherproj/domain/entities/RegisterResponseEntity.dart';
 import 'package:greanspherproj/domain/failures.dart';
-import 'package:greanspherproj/domain/repository/RegisterRepositoryContract.dart';
 import 'package:injectable/injectable.dart';
+
+import '../entities/RegisterResponseEntity.dart';
+import '../repository/RegisterRepositoryContract.dart';
 
 @injectable
 class RegisterUseCase {

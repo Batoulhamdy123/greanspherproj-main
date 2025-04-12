@@ -1,5 +1,3 @@
-// import 'package:greanspherproj/domain/entities/RegisterResponseEntity.dart';
-
 import 'package:greanspherproj/domain/entities/LoginResponseEntity%20.dart';
 
 class LoginResponseDto extends LoginResponseEntity {
@@ -11,20 +9,20 @@ class LoginResponseDto extends LoginResponseEntity {
   });
 
   LoginResponseDto.fromJson(dynamic json) {
-    data = json['data'] != null ? DataDto.fromJson(json['data']) : null;
+    data = json['data'] != null ? DataLoginDto.fromJson(json['data']) : null;
     statusCode = json['statusCode'];
     succeeded = json['succeeded'];
     message = json['message'];
   }
 }
 
-class DataDto extends DataEntity {
-  DataDto({
+class DataLoginDto extends DataLoginEntity {
+  DataLoginDto({
     super.userId,
     super.isActivateRequired,
   });
 
-  DataDto.fromJson(dynamic json) {
+  DataLoginDto.fromJson(dynamic json) {
     userId = json['userId'];
     isActivateRequired = json['isActivateRequired'];
   }

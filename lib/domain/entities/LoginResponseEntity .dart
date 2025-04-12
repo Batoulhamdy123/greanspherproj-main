@@ -1,7 +1,7 @@
 class LoginResponseEntity {
   String? type;
   List<String>? errors;
-  DataEntity? data;
+  DataLoginEntity? data;
   String? statusCode;
   bool? succeeded;
   String? message;
@@ -16,11 +16,11 @@ class LoginResponseEntity {
   });
 }
 
-class DataEntity {
+class DataLoginEntity {
   String? userId;
   bool? isActivateRequired;
 
-  DataEntity({
+  DataLoginEntity({
     this.userId,
     this.isActivateRequired,
   });

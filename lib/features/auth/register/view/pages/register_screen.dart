@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:greanspherproj/features/auth/register/controller/cubit/signupcubit_cubit.dart';
 
 import '../../../../../core/utilities/app_assets.dart';
 import '../../../../../core/utilities/color_manager.dart';
-import '../../../../../core/utilities/custom_elevated_button.dart';
 import '../../../../../core/utilities/custom_text_field.dart';
 import '../../../../../core/utilities/dialog_utils.dart';
-import '../../../../../core/utilities/style_manger.dart';
 import '../../../../../core/utilities/validation.dart';
-import '../../../../../core/utilities/values_manager.dart';
 import '../../controller/cubit/signupcubit_state.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -67,7 +63,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           body: SafeArea(
             child: ListView(
                 shrinkWrap: true,
-                physics: ClampingScrollPhysics(),
+                physics: const ClampingScrollPhysics(),
                 children: [
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

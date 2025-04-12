@@ -1,18 +1,19 @@
-part of 'logincubit_cubit.dart';
+import '../../../../../domain/entities/LoginResponseEntity .dart';
+import '../../../../../domain/failures.dart';
 
-abstract class LogincubitState {}
+abstract class LoginCubitState {}
 
-class LogincubitInitial extends LogincubitState {}
+class LoginCubitInitial extends LoginCubitState {}
 
-class LoginCubitLoadingState extends LogincubitState {}
+class LoginCubitLoadingState extends LoginCubitState {}
 
-class LoginCubitErrorState extends LogincubitState {
+class LoginCubitErrorState extends LoginCubitState {
   late Failures failures;
 
   LoginCubitErrorState({required this.failures});
 }
 
-class LoginCubitSuccessState extends LogincubitState {
+class LoginCubitSuccessState extends LoginCubitState {
   LoginResponseEntity loginResponseEntity;
 
   LoginCubitSuccessState({required this.loginResponseEntity});
