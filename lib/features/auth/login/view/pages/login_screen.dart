@@ -56,9 +56,9 @@ class _LoginScreenState extends State<LoginScreen> {
             title: "success",
             message: "Register Successfully",
           );
-          // Future.delayed(const Duration(seconds: 1)).then((_) {
-          //   Navigator.pushReplacementNamed(context, HomePageScreen() as String);
-          // });
+          Future.delayed(const Duration(seconds: 1)).then((_) {
+            Navigator.pushReplacementNamed(context, Verfication() as String);
+          });
         }
       },
       child: Scaffold(
@@ -150,53 +150,52 @@ class _LoginScreenState extends State<LoginScreen> {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      Verfication(
-                                                        button: ElevatedButton(
-                                                          onPressed: () {
-                                                            // Navigator.push(
-                                                            //   context,
-                                                            //   MaterialPageRoute(
-                                                            //       builder:
-                                                            //           (context) =>
-                                                            //           ChangePass(
-                                                            //             controller2:
-                                                            //             controller2,
-                                                            //           )
-                                                            //   ),
-                                                            // );
-                                                          },
-                                                          child: const Text(
-                                                            "Verify Code  ",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 23),
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                          ),
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                            backgroundColor:
-                                                                Colors.green,
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        100,
-                                                                    vertical:
-                                                                        10),
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10.0),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        word:
-                                                            "Verify Code Send ",
+                                                  builder: (context) => Verfication(
+                                                      // button: ElevatedButton(
+                                                      //   onPressed: () {
+                                                      //     // Navigator.push(
+                                                      //     //   context,
+                                                      //     //   MaterialPageRoute(
+                                                      //     //       builder:
+                                                      //     //           (context) =>
+                                                      //     //           ChangePass(
+                                                      //     //             controller2:
+                                                      //     //             controller2,
+                                                      //     //           )
+                                                      //     //   ),
+                                                      //     // );
+                                                      //   },
+                                                      //   child: const Text(
+                                                      //     "Verify Code  ",
+                                                      //     style: TextStyle(
+                                                      //         color: Colors
+                                                      //             .white,
+                                                      //         fontSize: 23),
+                                                      //     textAlign: TextAlign
+                                                      //         .center,
+                                                      //   ),
+                                                      //   style: ElevatedButton
+                                                      //       .styleFrom(
+                                                      //     backgroundColor:
+                                                      //         Colors.green,
+                                                      //     padding:
+                                                      //         const EdgeInsets
+                                                      //             .symmetric(
+                                                      //             horizontal:
+                                                      //                 100,
+                                                      //             vertical:
+                                                      //                 10),
+                                                      //     shape:
+                                                      //         RoundedRectangleBorder(
+                                                      //       borderRadius:
+                                                      //           BorderRadius
+                                                      //               .circular(
+                                                      //                   10.0),
+                                                      //     ),
+                                                      //   ),
+                                                      // ),
+                                                      // word:
+                                                      //     "Verify Code Send ",
                                                       )));
                                         },
                                         child: const Text(

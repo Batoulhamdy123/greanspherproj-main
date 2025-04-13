@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:greanspherproj/features/auth/login/view/pages/login_screen.dart';
 import 'package:greanspherproj/features/auth/register/controller/cubit/signupcubit_cubit.dart';
+import 'package:greanspherproj/features/dashboard/view/dashboardpage.dart';
 
 import '../../../../../core/utilities/app_assets.dart';
 import '../../../../../core/utilities/color_manager.dart';
@@ -53,9 +55,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               title: "success",
               message: "Register Successfully",
             );
-            // Future.delayed(const Duration(seconds: 1)).then((_) {
-            //   Navigator.pushReplacementNamed(context, HomePageScreen() as String);
-            // });
+            Future.delayed(const Duration(seconds: 1)).then((_) {
+              Navigator.pushReplacementNamed(context, DahboardPage() as String);
+            });
           }
         },
         child: Scaffold(
@@ -306,11 +308,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //       builder: (context) => LoginPage()),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginScreen()),
+                                );
                               },
                               // Navigate to sign up screen
 

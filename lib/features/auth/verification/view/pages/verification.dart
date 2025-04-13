@@ -1,5 +1,6 @@
 //import 'package:greanspherproj/features/auth/changepassword/view/pages/changepass.dart';
 import 'package:greanspherproj/features/auth/forgetpassword/view/imageforget.dart';
+import 'package:greanspherproj/features/auth/register/view/pages/register_screen.dart';
 import 'package:greanspherproj/features/auth/verification/view/component/requiredfeild.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -8,13 +9,9 @@ import 'package:flutter/rendering.dart';
 class Verfication extends StatelessWidget {
   Verfication({
     super.key,
-    required this.button,
-    required this.word,
-    this.button1,
   });
-  final Widget button;
+
   int counter = 60;
-  final String word;
 
   Widget? button1;
 
@@ -40,7 +37,7 @@ class Verfication extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 child: Text(
-                  word,
+                  "Verify code send ",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
@@ -98,12 +95,11 @@ class Verfication extends StatelessWidget {
                 height: 5,
               ),
               Center(
-                child: button,
-                /* ElevatedButton(
+                child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ChangePass()),
+                      MaterialPageRoute(builder: (context) => RegisterScreen()),
                     );
                   },
                   child: const Text(
@@ -112,29 +108,30 @@ class Verfication extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.green,
+                    backgroundColor: Colors.green,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 100, vertical: 10),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
-                ),*/
+                ),
               ),
               SizedBox(
                 height: 20,
               ),
-              Center(child: button1 ?? Container())
-              /*TextButton(
-                onPressed: () {},
-                child: Text(
-                  character1,
-                  style: TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17),
-                ),
-              ),*/
+              // Center(
+              //   child: TextButton(
+              //     onPressed: () {},
+              //     child: Text(
+              //       "Send again ",
+              //       style: TextStyle(
+              //           color: Colors.green,
+              //           fontWeight: FontWeight.bold,
+              //           fontSize: 17),
+              //     ),
+              //   ),
+              // )
             ],
           ),
         ));
