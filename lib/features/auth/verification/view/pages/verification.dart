@@ -120,18 +120,18 @@ class Verfication extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              // Center(
-              //   child: TextButton(
-              //     onPressed: () {},
-              //     child: Text(
-              //       "Send again ",
-              //       style: TextStyle(
-              //           color: Colors.green,
-              //           fontWeight: FontWeight.bold,
-              //           fontSize: 17),
-              //     ),
-              //   ),
-              // )
+              Center(
+                child: TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    "Change Email ",
+                    style: TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17),
+                  ),
+                ),
+              )
             ],
           ),
         ));
