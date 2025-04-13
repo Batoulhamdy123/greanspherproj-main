@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greanspherproj/features/auth/login/controller/cubit/logincubit_cubit.dart';
+import 'package:greanspherproj/features/dashboard/view/dashboardpage.dart';
 
 import '../../../../../core/utilities/app_assets.dart';
 import '../../../../../core/utilities/custom_text_field.dart';
@@ -57,11 +58,16 @@ class _LoginScreenState extends State<LoginScreen> {
             message: "Register Successfully",
           );
           Future.delayed(const Duration(seconds: 1)).then((_) {
-            Navigator.pushReplacementNamed(context, Verfication() as String);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Verfication()),
+            );
+            // Navigator.pushReplacementNamed(context, Verfication() as String);
           });
         }
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: SafeArea(
           child: ListView(
             shrinkWrap: true,
@@ -238,6 +244,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           LoginScreenCubit.get(context).login();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Verfication()),
+                          );
                         },
                         child: const Text(
                           "Log In ",

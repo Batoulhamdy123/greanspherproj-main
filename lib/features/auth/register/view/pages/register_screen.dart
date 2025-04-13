@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greanspherproj/features/auth/login/view/pages/login_screen.dart';
 import 'package:greanspherproj/features/auth/register/controller/cubit/signupcubit_cubit.dart';
+import 'package:greanspherproj/features/auth/verification/view/pages/verification.dart';
 import 'package:greanspherproj/features/dashboard/view/dashboardpage.dart';
 
 import '../../../../../core/utilities/app_assets.dart';
@@ -56,7 +57,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               message: "Register Successfully",
             );
             Future.delayed(const Duration(seconds: 1)).then((_) {
-              Navigator.pushReplacementNamed(context, DahboardPage() as String);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DahboardPage()),
+              );
+              // Navigator.pushReplacementNamed(context, DahboardPage() as String);
             });
           }
         },
