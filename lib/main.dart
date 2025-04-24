@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:greanspherproj/di/di.dart';
-import 'package:greanspherproj/features/auth/login/view/pages/login_screen.dart';
 import 'package:greanspherproj/features/auth/register/controller/cubit/signupcubit_cubit.dart';
-
 import 'core/bloc_observer/bloc_observer.dart';
+import 'core/routes_manger/routes.dart';
+import 'core/routes_manger/routes_generator.dart';
 import 'features/auth/login/controller/cubit/logincubit_cubit.dart';
 
 void main() {
@@ -34,12 +34,15 @@ class MyApp extends StatelessWidget {
         designSize: const Size(430, 932),
         minTextAdapt: true,
         splitScreenMode: true,
-        builder: (_, child) {
+        builder: (context, child) {
           return MaterialApp(
             locale: DevicePreview.locale(context),
             builder: DevicePreview.appBuilder,
             debugShowCheckedModeBanner: false,
-              home: LoginScreen());
+            home: child,
+            initialRoute: Routes.splashScreenRoute,
+            onGenerateRoute: RouteGenerator.getRoute,
+          );
         });
   }
 }

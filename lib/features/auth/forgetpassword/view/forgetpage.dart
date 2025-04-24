@@ -1,6 +1,6 @@
 //import 'package:greanspherproj/features/auth/verification/view/pages/verification.dart';
 import 'package:flutter/material.dart';
-import 'package:greanspherproj/core/utilities/validation.dart';
+import 'package:greanspherproj/core/widget/validation.dart';
 import 'package:greanspherproj/features/auth/forgetpassword/controller/cubit/forgetpassword_cubit.dart';
 import 'package:greanspherproj/features/auth/forgetpassword/view/imageforget.dart';
 

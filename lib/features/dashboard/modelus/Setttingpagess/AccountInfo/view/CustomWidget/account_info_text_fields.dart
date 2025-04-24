@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:greanspherproj/core/utilities/validation.dart';
+import 'package:greanspherproj/core/widget/validation.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Setttingpagess/AccountInfo/controller/cubit/account_info_cubit.dart';
 
 class AccountInfoTextFields extends StatelessWidget {

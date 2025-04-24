@@ -5,8 +5,7 @@ import 'package:greanspherproj/data/api_manager/end_points.dart';
 import 'package:greanspherproj/data/data_source/remote_data_sourse/auth_remote_data_source/register_remote_data_source/register_remote_data_source.dart';
 import 'package:greanspherproj/domain/failures.dart';
 import 'package:injectable/injectable.dart';
-
-import '../../../../../core/utilities/constant_manager.dart';
+import '../../../../../core/resource/constant_manager.dart';
 import '../../../../model/RegisterResponseDto.dart';
 
 @Injectable(as: RegisterRemoteDataSource)

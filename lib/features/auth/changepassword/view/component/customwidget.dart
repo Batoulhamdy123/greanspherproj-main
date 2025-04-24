@@ -1,9 +1,9 @@
-//import 'package:greanspherproj/core/utilities/validation.dart';
-//import 'package:greanspherproj/lib/core/utilities/validation.dart';
+//import 'package:greanspherproj/core/resource/validation.dart';
+//import 'package:greanspherproj/lib/core/resource/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:greanspherproj/features/auth/changepassword/controller/cubit/changecubit_cubit.dart';
 
-import '../../../../../core/utilities/validation.dart';
+import '../../../../../core/widget/validation.dart';
 
 // ignore: must_be_immutable
 class CustomWidget extends StatelessWidget {

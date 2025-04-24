@@ -1,5 +1,4 @@
-import 'package:greanspherproj/core/utilities/context.dart';
-//import 'package:greanspherproj/features/auth/verification/controller/cubit/verficationcubit_cubit.dart';
+import 'package:greanspherproj/core/resource/context.dart';
 import 'package:flutter/material.dart';
 import 'package:greanspherproj/features/auth/verification/controller/cubit/vericationcubit_cubit.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -8,7 +7,6 @@ class RequiredFeild extends StatelessWidget {
   const RequiredFeild({
     super.key,
   });
-  //final VerficationcubitCubit controller;
 
   @override
   Widget build(BuildContext context) {

@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greanspherproj/features/auth/login/view/pages/login_screen.dart';
 import 'package:greanspherproj/features/auth/register/controller/cubit/signupcubit_cubit.dart';
-import 'package:greanspherproj/features/auth/verification/view/pages/verification.dart';
 import 'package:greanspherproj/features/dashboard/view/dashboardpage.dart';
-
-import '../../../../../core/utilities/app_assets.dart';
-import '../../../../../core/utilities/color_manager.dart';
-import '../../../../../core/utilities/custom_text_field.dart';
-import '../../../../../core/utilities/dialog_utils.dart';
-import '../../../../../core/utilities/validation.dart';
+import '../../../../../core/resource/app_assets.dart';
+import '../../../../../core/resource/color_manager.dart';
+import '../../../../../core/widget/custom_text_field.dart';
+import '../../../../../core/widget/dialog_utils.dart';
+import '../../../../../core/widget/validation.dart';
 import '../../controller/cubit/signupcubit_state.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -31,15 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             DialogUtils.showLoading(context: context, message: "Loading....");
           } else if (state is RegisterCubitErrorState) {
             DialogUtils.hideLoading(context);
-            // if (state.failures is ValidationFailure) {
-            //   final validationErrors =
-            //       (state.failures as ValidationFailure).errors;
-            //   DialogUtil.showAlertDialog(
-            //     context: context,
-            //     title: "Validation Errors",
-            //     message: validationErrors.join("\n"),
-            //   );
-            // } else {
+
             DialogUtils.showAlertDialog(
               context: context,
               title: "Error",

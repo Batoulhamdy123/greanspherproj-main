@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greanspherproj/features/auth/login/controller/cubit/logincubit_cubit.dart';
-import 'package:greanspherproj/features/dashboard/view/dashboardpage.dart';
-
-import '../../../../../core/utilities/app_assets.dart';
-import '../../../../../core/utilities/custom_text_field.dart';
-import '../../../../../core/utilities/dialog_utils.dart';
-import '../../../../../core/utilities/validation.dart';
+import '../../../../../core/resource/app_assets.dart';
+import '../../../../../core/routes_manger/routes.dart';
+import '../../../../../core/widget/custom_text_field.dart';
+import '../../../../../core/widget/dialog_utils.dart';
+import '../../../../../core/widget/validation.dart';
 import '../../../forgetpassword/controller/cubit/forgetpassword_cubit.dart';
 import '../../../forgetpassword/view/forgetpage.dart';
-import '../../../register/view/pages/register_screen.dart';
 import '../../../verification/view/pages/verification.dart';
 import '../../controller/cubit/logincubit_state.dart';
 
@@ -334,11 +332,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => RegisterScreen()),
-                            );
+                            Navigator.pushNamed(context, Routes.signupRoute);
                           },
                           // Navigate to sign up screen
 

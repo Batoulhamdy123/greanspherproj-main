@@ -1,11 +1,8 @@
-//import 'package:greanspherproj/features/auth/changepassword/view/pages/changepass.dart';
 import 'package:greanspherproj/features/auth/forgetpassword/view/imageforget.dart';
 import 'package:greanspherproj/features/auth/register/view/pages/register_screen.dart';
 import 'package:greanspherproj/features/auth/verification/view/component/requiredfeild.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
-// ignore: must_be_immutable
 class Verfication extends StatelessWidget {
   Verfication({
     super.key,
@@ -15,14 +12,13 @@ class Verfication extends StatelessWidget {
 
   Widget? button1;
 
-  //String character1;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          leading: Icon(Icons.arrow_back_ios),
+          leading: const Icon(Icons.arrow_back_ios),
         ),
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
@@ -33,12 +29,13 @@ class Verfication extends StatelessWidget {
               /* SizedBox(
                 height: 10,
               ),*/
-              ForgetImage(),
+              const ForgetImage(),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 child: Text(
                   "Verify code send ",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                     fontSize: 25,
@@ -56,30 +53,27 @@ class Verfication extends StatelessWidget {
                   style: TextStyle(fontSize: 15),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              RequiredFeild(),
-              // const SizedBox(height: 10),
+              const RequiredFeild(),
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  //crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
                       "00: $counter sec",
-                      // textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 3,
                     ),
                     TextButton(
                       onPressed: () {},
-                      child: Text(
+                      child: const Text(
                         'Send Again ',
                         style: TextStyle(
                             color: Colors.green,
@@ -87,11 +81,10 @@ class Verfication extends StatelessWidget {
                             fontSize: 17),
                       ),
                     ),
-                    //Padding(padding: EdgeInsets.fromLTRB(45, 738.11, 35, 110),child: ,)
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Center(
@@ -117,7 +110,7 @@ class Verfication extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Center(
@@ -137,5 +130,5 @@ class Verfication extends StatelessWidget {
         ));
   }
 
-  InputDecoration decoration = InputDecoration();
+  InputDecoration decoration = const InputDecoration();
 }

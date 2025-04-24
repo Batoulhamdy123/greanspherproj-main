@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:greanspherproj/core/utilities/validation.dart';
+import 'package:greanspherproj/core/widget/validation.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   @override
