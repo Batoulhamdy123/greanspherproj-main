@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:greanspherproj/features/dashboard/modelus/chatbot/conversation.dart';
 
 class ChatBotPage extends StatelessWidget {
   @override
@@ -34,7 +35,12 @@ class ChatBotPage extends StatelessWidget {
                   height: 20,
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ChatScreen()),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 100, vertical: 10),
