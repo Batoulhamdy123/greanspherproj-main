@@ -204,12 +204,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Center(
                           child: ElevatedButton(
                             onPressed: () {
-                              /*Navigator.push(
+                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => DahboardPage()),
-                              );*/
-                              RegisterScreenCubit.get(context).register();
+                              );
+                              // RegisterScreenCubit.get(context).register();
                             },
                             child: const Text(
                               "Sign Up ",

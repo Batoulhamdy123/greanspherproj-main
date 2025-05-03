@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Reward/view/Reward.dart';
 import 'package:greanspherproj/features/dashboard/modelus/chatbot/chatbotpage.dart';
+import 'package:greanspherproj/features/dashboard/view/dashboardpage.dart';
 import 'search_bar_widget.dart';
 import 'featured_card_widget.dart';
 
@@ -86,46 +88,56 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 10),
-                  Center(
-                    child: Container(
-                      width: 193,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade400),
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.white,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 30,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.green, width: 2),
-                            ),
-                            child: Center(
-                              child: Container(
-                                width: 10,
-                                height: 10,
-                                decoration: BoxDecoration(
-                                  color: Colors.green,
-                                  shape: BoxShape.circle,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RewardsScreen()),
+                      );
+                    },
+                    child: Center(
+                      child: Container(
+                        width: 193,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade400),
+                          borderRadius: BorderRadius.circular(16),
+                          color: Colors.white,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border:
+                                    Border.all(color: Colors.green, width: 2),
+                              ),
+                              child: Center(
+                                child: Container(
+                                  width: 10,
+                                  height: 10,
+                                  decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    shape: BoxShape.circle,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          SizedBox(width: 12),
-                          Text(
-                            "807 points",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.black,
+                            SizedBox(width: 12),
+                            Text(
+                              "807 points",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
