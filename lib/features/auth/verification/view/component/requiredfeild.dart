@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:greanspherproj/features/auth/verification/controller/cubit/vericationcubit_cubit.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-class RequiredFeild extends StatelessWidget {
-  const RequiredFeild({
+class RequiredField extends StatelessWidget {
+  const RequiredField({
     super.key,
   });
 
@@ -15,7 +15,7 @@ class RequiredFeild extends StatelessWidget {
       child: PinCodeTextField(
         mainAxisAlignment: MainAxisAlignment.center,
         appContext: context,
-        pastedTextStyle: TextStyle(
+        pastedTextStyle: const TextStyle(
           color: Colors.green,
           fontWeight: FontWeight.bold,
         ),
@@ -36,7 +36,7 @@ class RequiredFeild extends StatelessWidget {
         },
         pinTheme: PinTheme(
             shape: PinCodeFieldShape.box,
-            borderRadius: BorderRadius.all(Radius.circular(
+            borderRadius: const BorderRadius.all(Radius.circular(
               12,
             )),
             fieldHeight: 45,

@@ -21,17 +21,26 @@ import '../data/data_source/remote_data_sourse/auth_remote_data_source/register_
     as _i530;
 import '../data/data_source/remote_data_sourse/auth_remote_data_source/register_remote_data_source/register_remote_data_source_impl.dart'
     as _i326;
+import '../data/data_source/remote_data_sourse/auth_remote_data_source/send_confirm_email_code_remote_data_source/send_confirm_email_code_remote_data_source.dart'
+    as _i243;
+import '../data/data_source/remote_data_sourse/auth_remote_data_source/send_confirm_email_code_remote_data_source/send_confirm_email_code_remote_data_source_impl.dart'
+    as _i444;
 import '../data/repository/auth_repository_impl/login_repository_impl.dart'
     as _i1018;
 import '../data/repository/auth_repository_impl/register_repository_impl.dart'
     as _i79;
+import '../data/repository/auth_repository_impl/send_confirm_emil_code_repository_impl.dart'
+    as _i678;
 import '../domain/repository/LoginRepositoryContract.dart' as _i540;
 import '../domain/repository/RegisterRepositoryContract.dart' as _i343;
+import '../domain/repository/SendConfirmEmailRepositoryContract.dart' as _i630;
 import '../domain/use_case/LoginUseCase%20.dart' as _i655;
 import '../domain/use_case/RegisterUseCase.dart' as _i734;
+import '../domain/use_case/SendConfirmEmailUseCase.dart' as _i203;
 import '../features/auth/login/controller/cubit/logincubit_cubit.dart' as _i79;
 import '../features/auth/register/controller/cubit/signupcubit_cubit.dart'
     as _i552;
+import '../features/auth/send_confirm_email_code/controller/cubit/send_confirm_email_code_screen_cubit.dart';
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -45,6 +54,9 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     gh.singleton<_i1000.ApiManager>(() => _i1000.ApiManager());
+    gh.factory<_i243.SendConfirmEmailCodeRemoteDataSource>(() =>
+        _i444.SendConfirmEmailCodeRemoteDataSourceImpl(
+            apiManager: gh<_i1000.ApiManager>()));
     gh.factory<_i530.RegisterRemoteDataSource>(() =>
         _i326.RegisterRemoteDataSourceImpl(
             apiManager: gh<_i1000.ApiManager>()));
@@ -57,8 +69,19 @@ extension GetItInjectableX on _i174.GetIt {
         registerRepository: gh<_i343.RegisterRepositoryContract>()));
     gh.factory<_i552.RegisterScreenCubit>(() => _i552.RegisterScreenCubit(
         registerUseCase: gh<_i734.RegisterUseCase>()));
+    gh.factory<_i630.SendConfirmEmailRepositoryContract>(() =>
+        _i678.SendConfirmEmailCodeRepositoryImpl(
+            confirmEmailCodeRemoteDataSource:
+                gh<_i243.SendConfirmEmailCodeRemoteDataSource>()));
     gh.factory<_i540.LoginRepositoryContract>(() => _i1018.LoginRepositoryImpl(
         loginRemoteDataSource: gh<_i105.LoginRemoteDataSource>()));
+    gh.factory<_i203.SendConfirmEmailUseCase>(() =>
+        _i203.SendConfirmEmailUseCase(
+            sendConfirmEmailRepositoryContract:
+                gh<_i630.SendConfirmEmailRepositoryContract>()));
+    gh.factory<SendConfirmEmailCodeScreenCubit>(() =>
+        SendConfirmEmailCodeScreenCubit(
+            sendConfirmEmailUseCase: gh<_i203.SendConfirmEmailUseCase>()));
     gh.factory<_i655.LoginUseCase>(() => _i655.LoginUseCase(
         loginRepository: gh<_i540.LoginRepositoryContract>()));
     gh.factory<_i79.LoginScreenCubit>(

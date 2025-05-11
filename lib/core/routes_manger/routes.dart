@@ -10,6 +10,8 @@ class Routes {
   static String homeRoute = "/home";
 
   static const String signInRoute = "/signIn";
+  static const String verifyRegister = "/verify";
+  static const String confirmEmail = "/confirm";
 
   static const String signupRoute = "/signUp";
 

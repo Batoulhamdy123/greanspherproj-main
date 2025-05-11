@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:greanspherproj/core/routes_manger/routes.dart';
+import 'package:greanspherproj/features/auth/send_confirm_email_code/view/confirm_email_screen.dart';
 import '../../features/auth/login/view/pages/login_screen.dart';
 import '../../features/auth/register/view/pages/register_screen.dart';
+import '../../features/auth/verification/view/pages/verification.dart';
 import '../../features/splash_screen/splash_screen.dart';
 import '../resource/color_manager.dart';
 import '../resource/constant_manager.dart';
@@ -13,10 +15,10 @@ class RouteGenerator {
     switch (settings.name) {
       // case Routes.cartRoute:
       //   return MaterialPageRoute(builder: (_) => const CartScreen());
-      // case Routes.mainRoute:
-      //   return MaterialPageRoute(builder: (_) => const MainLayout());
-      // case Routes.productScreenRoute:
-      //   return MaterialPageRoute(builder: (_) => const ProductsScreen());
+      case Routes.confirmEmail:
+        return MaterialPageRoute(builder: (_) => const ConfirmEmailScreen());
+      // case Routes.verifyRegister:
+      //   return MaterialPageRoute(builder: (_) =>  Verification());
       case Routes.signInRoute:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case Routes.signupRoute:

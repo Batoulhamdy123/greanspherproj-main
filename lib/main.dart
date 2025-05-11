@@ -8,6 +8,7 @@ import 'core/bloc_observer/bloc_observer.dart';
 import 'core/routes_manger/routes.dart';
 import 'core/routes_manger/routes_generator.dart';
 import 'features/auth/login/controller/cubit/logincubit_cubit.dart';
+import 'features/auth/send_confirm_email_code/controller/cubit/send_confirm_email_code_screen_cubit.dart';
 
 void main() {
   configureDependencies();
@@ -18,6 +19,8 @@ void main() {
       providers: [
         BlocProvider(create: (context) => getIt<RegisterScreenCubit>()),
         BlocProvider(create: (context) => getIt<LoginScreenCubit>()),
+        BlocProvider(
+            create: (context) => getIt<SendConfirmEmailCodeScreenCubit>()),
       ],
       child: const MyApp(),
     ),

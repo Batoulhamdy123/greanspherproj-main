@@ -1,17 +1,17 @@
-import 'package:greanspherproj/features/auth/forgetpassword/view/imageforget.dart';
 import 'package:greanspherproj/features/auth/register/view/pages/register_screen.dart';
 import 'package:greanspherproj/features/auth/verification/view/component/requiredfeild.dart';
 import 'package:flutter/material.dart';
 
-class Verfication extends StatelessWidget {
-  Verfication({
+import '../../../../../core/widget/imageforget.dart';
+
+class Verification extends StatelessWidget {
+  Verification({
     super.key,
   });
 
   int counter = 60;
 
   Widget? button1;
-
 
   @override
   Widget build(BuildContext context) {
@@ -26,16 +26,12 @@ class Verfication extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              /* SizedBox(
-                height: 10,
-              ),*/
               const ForgetImage(),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 child: Text(
                   "Verify code send ",
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                     fontSize: 25,
@@ -56,7 +52,7 @@ class Verfication extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              const RequiredFeild(),
+              const RequiredField(),
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,

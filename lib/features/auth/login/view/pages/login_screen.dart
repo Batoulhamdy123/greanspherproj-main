@@ -6,9 +6,7 @@ import '../../../../../core/routes_manger/routes.dart';
 import '../../../../../core/widget/custom_text_field.dart';
 import '../../../../../core/widget/dialog_utils.dart';
 import '../../../../../core/widget/validation.dart';
-import '../../../forgetpassword/controller/cubit/forgetpassword_cubit.dart';
-import '../../../forgetpassword/view/forgetpage.dart';
-import '../../../verification/view/pages/verification.dart';
+import '../../../forgetpassword/view/confirm_email.dart';
 import '../../controller/cubit/logincubit_state.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -39,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
           //     message: validationErrors.join("\n"),
           //   );
           // } else {
-          DialogUtils.showAlertDialog(
+          DialogUtils.showMessage(
             context: context,
             title: "Error",
             message: state.failures.errorMessage,
@@ -50,18 +48,18 @@ class _LoginScreenState extends State<LoginScreen> {
           // });
         } else if (state is LoginCubitSuccessState) {
           DialogUtils.hideLoading(context);
-          DialogUtils.showAlertDialog(
+          DialogUtils.showMessage(
             context: context,
             title: "success",
-            message: "Register Successfully",
+            message: "Login Successfully",
           );
-          Future.delayed(const Duration(seconds: 1)).then((_) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Verfication()),
-            );
-            // Navigator.pushReplacementNamed(context, Verfication() as String);
-          });
+          // Future.delayed(const Duration(seconds: 1)).then((_) {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(builder: (context) => Verfication()),
+          //   );
+          //   // Navigator.pushReplacementNamed(context, Verfication() as String);
+          // });
         }
       },
       child: Scaffold(
@@ -95,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 20,
                     ),
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 50),
@@ -103,6 +101,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         "Please sign in to continue   ",
                         style: TextStyle(fontSize: 15),
                       ),
+                    ),
+                    const SizedBox(
+                      height: 20,
                     ),
                     TextFormFieldItem(
                       label: " Email ",
@@ -145,62 +146,64 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ForgetPage(
-                                      controller: ForgetpasswordCubit(),
-                                      label: " Forget Password",
-                                      label2: "reset your password ",
+                                builder: (context) => ConfirmEmail(
+                                      controller: LoginScreenCubit.get(context)
+                                          .passwordController,
+                                      screenName: " Forget Password",
+                                      label: "reset your password ",
                                       button: ElevatedButton(
                                         onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => Verfication(
-                                                      // button: ElevatedButton(
-                                                      //   onPressed: () {
-                                                      //     // Navigator.push(
-                                                      //     //   context,
-                                                      //     //   MaterialPageRoute(
-                                                      //     //       builder:
-                                                      //     //           (context) =>
-                                                      //     //           ChangePass(
-                                                      //     //             controller2:
-                                                      //     //             controller2,
-                                                      //     //           )
-                                                      //     //   ),
-                                                      //     // );
-                                                      //   },
-                                                      //   child: const Text(
-                                                      //     "Verify Code  ",
-                                                      //     style: TextStyle(
-                                                      //         color: Colors
-                                                      //             .white,
-                                                      //         fontSize: 23),
-                                                      //     textAlign: TextAlign
-                                                      //         .center,
-                                                      //   ),
-                                                      //   style: ElevatedButton
-                                                      //       .styleFrom(
-                                                      //     backgroundColor:
-                                                      //         Colors.green,
-                                                      //     padding:
-                                                      //         const EdgeInsets
-                                                      //             .symmetric(
-                                                      //             horizontal:
-                                                      //                 100,
-                                                      //             vertical:
-                                                      //                 10),
-                                                      //     shape:
-                                                      //         RoundedRectangleBorder(
-                                                      //       borderRadius:
-                                                      //           BorderRadius
-                                                      //               .circular(
-                                                      //                   10.0),
-                                                      //     ),
-                                                      //   ),
-                                                      // ),
-                                                      // word:
-                                                      //     "Verify Code Send ",
-                                                      )));
+                                          // Navigator.push(
+                                          //     context,
+                                          //     MaterialPageRoute(
+                                          //         builder: (context) =>
+                                          //             ForgetPage(
+                                          //             button: ElevatedButton(
+                                          //               onPressed: () {
+                                          //                 Navigator.push(
+                                          //                   context,
+                                          //                   MaterialPageRoute(
+                                          //                       builder:
+                                          //                           (context) =>
+                                          //                           ChangePass(
+                                          //                             controller2:
+                                          //                             controller2,
+                                          //                           )
+                                          //                   ),
+                                          //                 );
+                                          //               },
+                                          //               child: const Text(
+                                          //                 "Verify Code  ",
+                                          //                 style: TextStyle(
+                                          //                     color: Colors
+                                          //                         .white,
+                                          //                     fontSize: 23),
+                                          //                 textAlign: TextAlign
+                                          //                     .center,
+                                          //               ),
+                                          //               style: ElevatedButton
+                                          //                   .styleFrom(
+                                          //                 backgroundColor:
+                                          //                     Colors.green,
+                                          //                 padding:
+                                          //                     const EdgeInsets
+                                          //                         .symmetric(
+                                          //                         horizontal:
+                                          //                             100,
+                                          //                         vertical:
+                                          //                             10),
+                                          //                 shape:
+                                          //                     RoundedRectangleBorder(
+                                          //                   borderRadius:
+                                          //                       BorderRadius
+                                          //                           .circular(
+                                          //                               10.0),
+                                          //                 ),
+                                          //               ),
+                                          //             ),
+                                          //             word:
+                                          //                 "Verify Code Send ",
+                                          //             )));
                                         },
                                         child: const Text(
                                           "Send Code   ",
@@ -242,11 +245,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           LoginScreenCubit.get(context).login();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Verfication()),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => Verfication()),
+                          // );
                         },
                         child: const Text(
                           "Log In ",

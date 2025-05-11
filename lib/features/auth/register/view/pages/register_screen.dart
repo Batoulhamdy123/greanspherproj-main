@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greanspherproj/features/auth/login/view/pages/login_screen.dart';
 import 'package:greanspherproj/features/auth/register/controller/cubit/signupcubit_cubit.dart';
-import 'package:greanspherproj/features/dashboard/modelus/Home/view/home_screen.dart';
-import 'package:greanspherproj/features/dashboard/modelus/Order/view/OrderPage.dart';
-import 'package:greanspherproj/features/dashboard/view/dashboardpage.dart';
 import '../../../../../core/resource/app_assets.dart';
 import '../../../../../core/resource/color_manager.dart';
+import '../../../../../core/routes_manger/routes.dart';
 import '../../../../../core/widget/custom_text_field.dart';
 import '../../../../../core/widget/dialog_utils.dart';
 import '../../../../../core/widget/validation.dart';
@@ -32,28 +30,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
           } else if (state is RegisterCubitErrorState) {
             DialogUtils.hideLoading(context);
 
-            DialogUtils.showAlertDialog(
+            DialogUtils.showMessage(
               context: context,
               title: "Error",
               message: state.failures.errorMessage,
             );
-            // }
-            // Future.delayed(const Duration(seconds: 1)).then((_) {
-            //   Navigator.of(context).pop();
-            // });
           } else if (state is RegisterCubitSuccessState) {
             DialogUtils.hideLoading(context);
-            DialogUtils.showAlertDialog(
+            DialogUtils.showMessage(
               context: context,
               title: "success",
               message: "Register Successfully",
             );
             Future.delayed(const Duration(seconds: 1)).then((_) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DahboardPage()),
-              );
-              // Navigator.pushReplacementNamed(context, DahboardPage() as String);
+              Navigator.pushReplacementNamed(context, Routes.confirmEmail);
             });
           }
         },
@@ -204,19 +194,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         Center(
                           child: ElevatedButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => DahboardPage()),
-                              );
-                              // RegisterScreenCubit.get(context).register();
+                              RegisterScreenCubit.get(context).register();
                             },
-                            child: const Text(
-                              "Sign Up ",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 23),
-                              textAlign: TextAlign.center,
-                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green,
                               padding: const EdgeInsets.symmetric(
@@ -224,6 +203,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
+                            ),
+                            child: const Text(
+                              "Sign Up ",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 23),
+                              textAlign: TextAlign.center,
                             ),
                           ),
                           /*SizedBox(

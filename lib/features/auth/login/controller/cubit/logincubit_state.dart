@@ -8,7 +8,7 @@ class LoginCubitInitial extends LoginCubitState {}
 class LoginCubitLoadingState extends LoginCubitState {}
 
 class LoginCubitErrorState extends LoginCubitState {
-  late Failures failures;
+  Failures failures;
 
   LoginCubitErrorState({required this.failures});
 }

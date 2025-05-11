@@ -1,214 +1,96 @@
 import 'package:flutter/material.dart';
+import '../resource/color_manager.dart';
 
 class DialogUtils {
-  static Future<void> showAlertDialog({
-    required BuildContext context,
-    required String title,
-    required String message,
-    String confirmButtonText = "OK",
-  }) async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(confirmButtonText),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  static Future<bool> showConfirmationDialog({
-    required BuildContext context,
-    required String title,
-    required String message,
-    String confirmButtonText = "Yes",
-    String cancelButtonText = "No",
-  }) async {
-    bool? result = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: Text(cancelButtonText),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: Text(confirmButtonText),
-            ),
-          ],
-        );
-      },
-    );
-    return result ?? false;
-  }
-
-  static Future<void> showCustomDialog({
-    required BuildContext context,
-    required Widget content,
-  }) async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: content,
-        );
-      },
-    );
-  }
-
-  static void showLoading({
-    required BuildContext context,
-    String message = "Loading...",
-  }) {
+  static void showLoading(
+      {required BuildContext context, required String message}) {
     showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: ColorManager.white,
+            content: Row(
               children: [
-                CircularProgressIndicator(),
-                SizedBox(width: 16),
-                Text(message),
+                CircularProgressIndicator(
+                  color: ColorManager.primary,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    message,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(color: ColorManager.primary),
+                  ),
+                )
               ],
             ),
-          ),
-        );
-      },
-    );
+          );
+        });
   }
 
   static void hideLoading(BuildContext context) {
-    Navigator.of(context, rootNavigator: true).pop();
+    Navigator.pop(context);
   }
-}
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Dialog Util Example"),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                DialogUtils.showAlertDialog(
-                  context: context,
-                  title: "Alert Dialog",
-                  message: "This is an alert dialog.",
-                );
-              },
-              child: Text("Show Alert Dialog"),
+  static void showMessage(
+      {required BuildContext context,
+      required String message,
+      String title = '',
+      String? posActionName,
+      Function? posAction,
+      String? negActionName,
+      Function? negAction}) {
+    List<Widget> actions = [];
+    if (posActionName != null) {
+      actions.add(TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+            posAction?.call();
+          },
+          child: Text(
+            posActionName,
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                ?.copyWith(color: ColorManager.primary),
+          )));
+    }
+    if (negActionName != null) {
+      actions.add(TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+            negAction?.call();
+          },
+          child: Text(
+            negActionName,
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                ?.copyWith(color: ColorManager.primary),
+          )));
+    }
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: ColorManager.white,
+            content: Text(message,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(color: ColorManager.primary)),
+            title: Text(
+              title,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge
+                  ?.copyWith(color: ColorManager.primary),
             ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () async {
-                bool isConfirmed = await DialogUtils.showConfirmationDialog(
-                  context: context,
-                  title: "Confirmation Dialog",
-                  message: "Do you want to proceed?",
-                );
-
-                if (isConfirmed) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("You confirmed!")),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("You canceled!")),
-                  );
-                }
-              },
-              child: Text("Show Confirmation Dialog"),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                DialogUtils.showCustomDialog(
-                  context: context,
-                  content: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("Custom Dialog", style: TextStyle(fontSize: 18)),
-                        SizedBox(height: 16),
-                        Text("This is a custom dialog content."),
-                        SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text("Close"),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-              child: Text("Show Custom Dialog"),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                DialogUtils.showLoading(context: context);
-
-                Future.delayed(Duration(seconds: 3), () {
-                  DialogUtils.hideLoading(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Loading Completed")),
-                  );
-                });
-              },
-              child: Text("Show Loading"),
-            ),
-          ],
-        ),
-      ),
-    );
+            actions: actions,
+          );
+        });
   }
 }
