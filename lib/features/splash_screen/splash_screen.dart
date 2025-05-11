@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/resource/app_assets.dart';
 import '../../core/routes_manger/routes.dart';
 
@@ -14,7 +15,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pushReplacementNamed(context, Routes.signInRoute);
+      Navigator.pushReplacementNamed(context, Routes.confirmEmail);
     });
   }
 
