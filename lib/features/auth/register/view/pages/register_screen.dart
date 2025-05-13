@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greanspherproj/features/auth/login/view/pages/login_screen.dart';
 import 'package:greanspherproj/features/auth/register/controller/cubit/signupcubit_cubit.dart';
+
 import '../../../../../core/resource/app_assets.dart';
 import '../../../../../core/resource/color_manager.dart';
 import '../../../../../core/routes_manger/routes.dart';
@@ -40,7 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             DialogUtils.showMessage(
               context: context,
               title: "success",
-              message: "Register Successfully",
+              message: "The operation was completed successfully.",
             );
             Future.delayed(const Duration(seconds: 1)).then((_) {
               Navigator.pushReplacementNamed(context, Routes.confirmEmail);

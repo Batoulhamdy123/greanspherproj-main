@@ -5,11 +5,12 @@ import '../../../../core/widget/custom_text_field.dart';
 import '../../../../core/widget/dialog_utils.dart';
 import '../../../../core/widget/imageforget.dart';
 import '../../../../core/widget/validation.dart';
+import '../../confirm_email_code/view/pages/confirm_email_screen.dart';
 import '../controller/cubit/send_confirm_email_code_screen_cubit.dart';
 import '../controller/cubit/send_confirm_email_code_screen_state.dart';
 
-class ConfirmEmailScreen extends StatelessWidget {
-  const ConfirmEmailScreen({
+class SendConfirmEmailScreen extends StatelessWidget {
+  const SendConfirmEmailScreen({
     super.key,
   });
 
@@ -29,20 +30,30 @@ class ConfirmEmailScreen extends StatelessWidget {
             message: state.failures.errorMessage,
           );
         } else if (state is SendConfirmEmailCodeSuccessState) {
-          DialogUtils.hideLoading(context);
           DialogUtils.showMessage(
             context: context,
             title: "success",
             message:
                 "The confirmation email code has been sent to your email successfully. Check your inbox.",
           );
-          // Future.delayed(const Duration(seconds: 1)).then((_) {
-          //   Navigator.push(
-          //     context,
-          //     MaterialPageRoute(builder: (context) => Verification()),
-          //   );
-          //   // Navigator.pushReplacementNamed(context, Verification() as String);
-          // });
+          // DialogUtils.hideLoading(context);
+          Future.delayed(const Duration(seconds: 1)).then((_) {
+            print(
+                "Email entered: ${SendConfirmEmailCodeScreenCubit.get(context).emailController.text.trim()}");
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ConfirmEmailScreen(
+                  provider: "gmail",
+                  email: SendConfirmEmailCodeScreenCubit.get(context)
+                      .emailController
+                      .text
+                      .trim(),
+                ),
+              ),
+            );
+          });
         }
       },
       child: Scaffold(

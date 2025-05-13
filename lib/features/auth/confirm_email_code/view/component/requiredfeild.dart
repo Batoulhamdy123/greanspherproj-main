@@ -1,7 +1,8 @@
-import 'package:greanspherproj/core/resource/context.dart';
 import 'package:flutter/material.dart';
-import 'package:greanspherproj/features/auth/verification/controller/cubit/vericationcubit_cubit.dart';
+import 'package:greanspherproj/core/resource/context.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+
+import '../../controller/cubit/confirm_email_code_cubit.dart';
 
 class RequiredField extends StatelessWidget {
   const RequiredField({
@@ -52,7 +53,7 @@ class RequiredField extends StatelessWidget {
         enableActiveFill: true,
         // errorAnimationController: errorController ,
 
-        controller: VerficationcubitCubit().pinCodeController,
+        controller: ConfirmEmailCodeCubit.get(context).pinCodeController,
         keyboardType: TextInputType.number,
         boxShadows: const [
           BoxShadow(

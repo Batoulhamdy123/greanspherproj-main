@@ -3,7 +3,7 @@
 // import 'package:greanspherproj/features/auth/forgetpassword/view/forgetpage.dart';
 // import 'package:greanspherproj/features/auth/login/controller/cubit/logincubit_cubit.dart';
 // import 'package:greanspherproj/features/auth/login/view/component/textfields.dart';
-// import 'package:greanspherproj/features/auth/verification/view/pages/verification.dart';
+// import 'package:greanspherproj/features/auth/confirm_email_code/view/pages/confirm_email_code.dart';
 // import 'package:flutter/material.dart';
 //
 // import '../../../register/controller/cubit/signupcubit_cubit.dart';
