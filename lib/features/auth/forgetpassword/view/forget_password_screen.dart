@@ -6,23 +6,22 @@ import '../../../../core/widget/dialog_utils.dart';
 import '../../../../core/widget/imageforget.dart';
 import '../../../../core/widget/validation.dart';
 import '../../confirm_email_code/view/pages/confirm_email_screen.dart';
-import '../controller/cubit/send_confirm_email_code_screen_cubit.dart';
-import '../controller/cubit/send_confirm_email_code_screen_state.dart';
+import '../controller/cubit/forget_password_screen_cubit.dart';
+import '../controller/cubit/forget_password_screen_state.dart';
 
-class SendConfirmEmailScreen extends StatelessWidget {
-  const SendConfirmEmailScreen({
+class ForgetPasswordScreen extends StatelessWidget {
+  const ForgetPasswordScreen({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SendConfirmEmailCodeScreenCubit,
-        SendConfirmEmailCodeScreenState>(
-      bloc: SendConfirmEmailCodeScreenCubit.get(context),
+    return BlocListener<ForgetPasswordScreenCubit, ForgetPasswordScreenState>(
+      bloc: ForgetPasswordScreenCubit.get(context),
       listener: (context, state) {
-        if (state is SendConfirmEmailCodeLoadingState) {
+        if (state is ForgetPasswordLoadingState) {
           DialogUtils.showLoading(context: context, message: "Loading....");
-        } else if (state is SendConfirmEmailCodeErrorState) {
+        } else if (state is ForgetPasswordErrorState) {
           DialogUtils.hideLoading(context);
           DialogUtils.showMessage(
             context: context,
@@ -32,26 +31,25 @@ class SendConfirmEmailScreen extends StatelessWidget {
           Future.delayed(const Duration(seconds: 1)).then((_) {
             Navigator.of(context).pop();
           });
-        } else if (state is SendConfirmEmailCodeSuccessState) {
+        } else if (state is ForgetPasswordSuccessState) {
           DialogUtils.hideLoading(context);
           DialogUtils.showMessage(
             context: context,
             title: "success",
-            message:
-                "The confirmation email code has been sent to your email successfully. Check your inbox.",
+            message: "The operation was completed successfully.",
           );
           Future.delayed(const Duration(seconds: 1)).then((_) {
-
+            Navigator.of(context).pop();
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (_) => ConfirmEmailScreen(
                   provider: "gmail",
-                  email: SendConfirmEmailCodeScreenCubit.get(context)
+                  email: ForgetPasswordScreenCubit.get(context)
                       .emailController
                       .text
                       .trim(),
-                  fromScreen: 'SendConfirmEmailScreen',
+                  fromScreen: 'ForgetPasswordScreen',
                 ),
               ),
             );
@@ -73,7 +71,7 @@ class SendConfirmEmailScreen extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   child: Text(
-                    "Verify Email",
+                    "Forgot Password",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
@@ -88,7 +86,7 @@ class SendConfirmEmailScreen extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30),
                   child: Text(
-                    "Enter the email address you used when you joined and we'll send you instruction to Verify Email .  ",
+                    "Enter the email address you used when you joined and we'll send you instruction to reset your password .  ",
                     style: TextStyle(fontSize: 15),
                   ),
                 ),
@@ -97,8 +95,8 @@ class SendConfirmEmailScreen extends StatelessWidget {
                 ),
                 TextFormFieldItem(
                   label: "email",
-                  controller: SendConfirmEmailCodeScreenCubit.get(context)
-                      .emailController,
+                  controller:
+                      ForgetPasswordScreenCubit.get(context).emailController,
                   prefixIcon: const Icon(Icons.email),
                   keyboardType: TextInputType.name,
                   validator: MyValidation.validateEmail,
@@ -107,8 +105,8 @@ class SendConfirmEmailScreen extends StatelessWidget {
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
-                      SendConfirmEmailCodeScreenCubit.get(context)
-                          .sendConfirmEmailCode('gmail');
+                      ForgetPasswordScreenCubit.get(context)
+                          .forgetPasswordConfirmEmailCode('gmail');
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,

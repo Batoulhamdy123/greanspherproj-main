@@ -36,6 +36,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               title: "Error",
               message: state.failures.errorMessage,
             );
+            Future.delayed(const Duration(seconds: 1)).then((_) {
+              Navigator.of(context).pop();
+            });
           } else if (state is RegisterCubitSuccessState) {
             DialogUtils.hideLoading(context);
             DialogUtils.showMessage(
@@ -212,34 +215,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               textAlign: TextAlign.center,
                             ),
                           ),
-                          /*SizedBox(
-                        height: AppSize.s60.h,
-                        width: MediaQuery.of(context).size.width * .9,
-                        child: CustomElevatedButton(
-                          label: "Sign Up ",
-                          backgroundColor: ColorManager.primary,
-                          textStyle: getBoldStyle(
-                              color: ColorManager.white, fontSize: 23),
-                          onTap: () {
-                            RegisterScreenCubit.get(context).register();
-                          },
                         ),
-                      ),*/
-                        ),
-                        /*
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                ),
-                child: Text('Log in'),
-              ),
-            ),*/
                         const SizedBox(height: 10),
                         const Row(
                           children: [
@@ -261,24 +237,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             )),
                           ],
                         ),
-                        SizedBox(height: 15),
+                        const SizedBox(height: 15),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             IconButton(
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.facebook,
                                 color: Color.fromARGB(255, 19, 81, 132),
                                 size: 47,
                               ),
                               onPressed: () {},
                             ),
-                            SizedBox(width: 30),
+                            const SizedBox(width: 30),
                             GestureDetector(
                               onTap: () {
                                 // Google login action
                               },
-                              child: Container(
+                              child: SizedBox(
                                   height: 40,
                                   width: 40,
                                   child:
@@ -286,11 +262,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 1),
+                        const SizedBox(height: 1),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
+                            const Text(
                               "already have an account ? ",
                               style: TextStyle(fontSize: 15),
                             ),
@@ -299,12 +275,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => LoginScreen()),
+                                      builder: (context) =>
+                                          const LoginScreen()),
                                 );
                               },
-                              // Navigate to sign up screen
-
-                              child: Text(
+                              child: const Text(
                                 'Log in',
                                 style: TextStyle(
                                     color: Colors.green,
@@ -312,7 +287,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     fontSize: 18),
                               ),
                             ),
-                            //Padding(padding: EdgeInsets.fromLTRB(45, 738.11, 35, 110),child: ,)
                           ],
                         ),
                       ]),

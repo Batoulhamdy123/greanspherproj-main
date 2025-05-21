@@ -18,3 +18,9 @@ class ConfirmEmailCodeSuccessState extends ConfirmEmailCodeState {
 
   ConfirmEmailCodeSuccessState({required this.confirmEmailResponseEntity});
 }
+
+class ConfirmEmailCodeTimerTick extends ConfirmEmailCodeState {
+  final int counter;
+
+  ConfirmEmailCodeTimerTick(this.counter);
+}

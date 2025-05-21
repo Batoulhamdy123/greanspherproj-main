@@ -17,6 +17,10 @@ import '../data/data_source/remote_data_sourse/auth_remote_data_source/confirm_e
     as _i859;
 import '../data/data_source/remote_data_sourse/auth_remote_data_source/confirm_email_code_remote_data_source/confirm_email_code_remote_data_source_impl.dart'
     as _i61;
+import '../data/data_source/remote_data_sourse/auth_remote_data_source/forget_password_remote_data_source/forget_password_remote_data_source.dart'
+    as _i41;
+import '../data/data_source/remote_data_sourse/auth_remote_data_source/forget_password_remote_data_source/forget_password_remote_data_source_impl.dart'
+    as _i957;
 import '../data/data_source/remote_data_sourse/auth_remote_data_source/login_remote_data_source/login_remote_data_source.dart'
     as _i105;
 import '../data/data_source/remote_data_sourse/auth_remote_data_source/login_remote_data_source/login_remote_data_source_impl.dart'
@@ -25,31 +29,47 @@ import '../data/data_source/remote_data_sourse/auth_remote_data_source/register_
     as _i530;
 import '../data/data_source/remote_data_sourse/auth_remote_data_source/register_remote_data_source/register_remote_data_source_impl.dart'
     as _i326;
+import '../data/data_source/remote_data_sourse/auth_remote_data_source/reset_password_remote_data_source/reset_password_remote_data_source.dart'
+    as _i177;
+import '../data/data_source/remote_data_sourse/auth_remote_data_source/reset_password_remote_data_source/reset_password_remote_data_source_impl.dart'
+    as _i488;
 import '../data/data_source/remote_data_sourse/auth_remote_data_source/send_confirm_email_code_remote_data_source/send_confirm_email_code_remote_data_source.dart'
     as _i243;
 import '../data/data_source/remote_data_sourse/auth_remote_data_source/send_confirm_email_code_remote_data_source/send_confirm_email_code_remote_data_source_impl.dart'
     as _i444;
 import '../data/repository/auth_repository_impl/confirm_emil_code_repository_impl.dart'
     as _i634;
+import '../data/repository/auth_repository_impl/forget_password_repository_impl.dart'
+    as _i855;
 import '../data/repository/auth_repository_impl/login_repository_impl.dart'
     as _i1018;
 import '../data/repository/auth_repository_impl/register_repository_impl.dart'
     as _i79;
+import '../data/repository/auth_repository_impl/reset_password_repository_impl.dart'
+    as _i1056;
 import '../data/repository/auth_repository_impl/send_confirm_emil_code_repository_impl.dart'
     as _i678;
+import '../domain/repository/ForgetPasswordRepositoryContract.dart' as _i440;
 import '../domain/repository/LoginRepositoryContract.dart' as _i540;
 import '../domain/repository/RegisterRepositoryContract.dart' as _i343;
+import '../domain/repository/ResetPasswordRepositoryContract.dart' as _i598;
 import '../domain/repository/SendConfirmEmailRepositoryContract.dart' as _i630;
 import '../domain/repository/confirmEmailRepositoryContract.dart' as _i33;
 import '../domain/use_case/ConfirmEmailUseCase.dart' as _i131;
+import '../domain/use_case/ForgetPasswordUseCase.dart' as _i467;
 import '../domain/use_case/LoginUseCase%20.dart' as _i655;
 import '../domain/use_case/RegisterUseCase.dart' as _i734;
+import '../domain/use_case/ResetPasswordUseCase.dart' as _i631;
 import '../domain/use_case/SendConfirmEmailUseCase.dart' as _i203;
 import '../features/auth/confirm_email_code/controller/cubit/confirm_email_code_cubit.dart'
     as _i427;
+import '../features/auth/forgetpassword/controller/cubit/forget_password_screen_cubit.dart'
+    as _i219;
 import '../features/auth/login/controller/cubit/logincubit_cubit.dart' as _i79;
 import '../features/auth/register/controller/cubit/signupcubit_cubit.dart'
     as _i552;
+import '../features/auth/reset_password/controller/cubit/reset_password_cubit.dart'
+    as _i429;
 import '../features/auth/send_confirm_email_code/controller/cubit/send_confirm_email_code_screen_cubit.dart'
     as _i74;
 
@@ -65,11 +85,21 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     gh.singleton<_i1000.ApiManager>(() => _i1000.ApiManager());
+    gh.factory<_i177.ResetPasswordRemoteDataSource>(() =>
+        _i488.ResetPasswordRemoteDataSourceImpl(
+            apiManager: gh<_i1000.ApiManager>()));
     gh.factory<_i859.ConfirmEmailCodeRemoteDataSource>(() =>
         _i61.ConfirmEmailCodeRemoteDataSourceImpl(
             apiManager: gh<_i1000.ApiManager>()));
+    gh.factory<_i598.ResetPasswordRepositoryContract>(() =>
+        _i1056.ResetPasswordRepositoryImpl(
+            resetPasswordRemoteDataSource:
+                gh<_i177.ResetPasswordRemoteDataSource>()));
     gh.factory<_i243.SendConfirmEmailCodeRemoteDataSource>(() =>
         _i444.SendConfirmEmailCodeRemoteDataSourceImpl(
+            apiManager: gh<_i1000.ApiManager>()));
+    gh.factory<_i41.ForgetPasswordRemoteDataSource>(() =>
+        _i957.ForgetPasswordRemoteDataSourceImpl(
             apiManager: gh<_i1000.ApiManager>()));
     gh.factory<_i530.RegisterRemoteDataSource>(() =>
         _i326.RegisterRemoteDataSourceImpl(
@@ -81,6 +111,19 @@ extension GetItInjectableX on _i174.GetIt {
             registerRemoteDataSource: gh<_i530.RegisterRemoteDataSource>()));
     gh.factory<_i734.RegisterUseCase>(() => _i734.RegisterUseCase(
         registerRepository: gh<_i343.RegisterRepositoryContract>()));
+    gh.factory<_i440.ForgetPasswordRepositoryContract>(() =>
+        _i855.ForgetPasswordRepositoryImpl(
+            forgetPasswordRemoteDataSource:
+                gh<_i41.ForgetPasswordRemoteDataSource>()));
+    gh.factory<_i631.ResetPasswordUseCase>(() => _i631.ResetPasswordUseCase(
+        resetPasswordRepositoryContract:
+            gh<_i598.ResetPasswordRepositoryContract>()));
+    gh.factory<_i467.ForgetPasswordUseCase>(() => _i467.ForgetPasswordUseCase(
+        forgetPasswordRepositoryContract:
+            gh<_i440.ForgetPasswordRepositoryContract>()));
+    gh.factory<_i219.ForgetPasswordScreenCubit>(() =>
+        _i219.ForgetPasswordScreenCubit(
+            forgetPasswordUseCase: gh<_i467.ForgetPasswordUseCase>()));
     gh.factory<_i552.RegisterScreenCubit>(() => _i552.RegisterScreenCubit(
         registerUseCase: gh<_i734.RegisterUseCase>()));
     gh.factory<_i630.SendConfirmEmailRepositoryContract>(() =>
@@ -100,6 +143,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i131.ConfirmEmailUseCase>(() => _i131.ConfirmEmailUseCase(
         confirmEmailRepositoryContract:
             gh<_i33.ConfirmEmailRepositoryContract>()));
+    gh.factory<_i429.ResetPasswordCubit>(() => _i429.ResetPasswordCubit(
+        resetPasswordUseCase: gh<_i631.ResetPasswordUseCase>()));
     gh.factory<_i74.SendConfirmEmailCodeScreenCubit>(() =>
         _i74.SendConfirmEmailCodeScreenCubit(
             sendConfirmEmailUseCase: gh<_i203.SendConfirmEmailUseCase>()));

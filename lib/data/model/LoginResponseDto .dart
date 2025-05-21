@@ -1,4 +1,4 @@
-import 'package:greanspherproj/domain/entities/LoginResponseEntity%20.dart';
+import '../../domain/entities/LoginResponseEntity .dart';
 
 class LoginResponseDto extends LoginResponseEntity {
   LoginResponseDto({

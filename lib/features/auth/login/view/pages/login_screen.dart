@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greanspherproj/features/auth/login/controller/cubit/logincubit_cubit.dart';
+
 import '../../../../../core/resource/app_assets.dart';
 import '../../../../../core/routes_manger/routes.dart';
 import '../../../../../core/widget/custom_text_field.dart';
 import '../../../../../core/widget/dialog_utils.dart';
 import '../../../../../core/widget/validation.dart';
-import '../../../forgetpassword/view/confirm_email.dart';
 import '../../controller/cubit/logincubit_state.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -28,24 +28,15 @@ class _LoginScreenState extends State<LoginScreen> {
           DialogUtils.showLoading(context: context, message: "Loading....");
         } else if (state is LoginCubitErrorState) {
           DialogUtils.hideLoading(context);
-          // if (state.failures is ValidationFailure) {
-          //   final validationErrors =
-          //       (state.failures as ValidationFailure).errors;
-          //   DialogUtil.showAlertDialog(
-          //     context: context,
-          //     title: "Validation Errors",
-          //     message: validationErrors.join("\n"),
-          //   );
-          // } else {
+
           DialogUtils.showMessage(
             context: context,
             title: "Error",
             message: state.failures.errorMessage,
           );
-          // }
-          // Future.delayed(const Duration(seconds: 1)).then((_) {
-          //   Navigator.of(context).pop();
-          // });
+          Future.delayed(const Duration(seconds: 1)).then((_) {
+            Navigator.of(context).pop();
+          });
         } else if (state is LoginCubitSuccessState) {
           DialogUtils.hideLoading(context);
           DialogUtils.showMessage(
@@ -143,87 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ConfirmEmail(
-                                      controller: LoginScreenCubit.get(context)
-                                          .passwordController,
-                                      screenName: " Forget Password",
-                                      label: "reset your password ",
-                                      button: ElevatedButton(
-                                        onPressed: () {
-                                          // Navigator.push(
-                                          //     context,
-                                          //     MaterialPageRoute(
-                                          //         builder: (context) =>
-                                          //             ForgetPage(
-                                          //             button: ElevatedButton(
-                                          //               onPressed: () {
-                                          //                 Navigator.push(
-                                          //                   context,
-                                          //                   MaterialPageRoute(
-                                          //                       builder:
-                                          //                           (context) =>
-                                          //                           ChangePass(
-                                          //                             controller2:
-                                          //                             controller2,
-                                          //                           )
-                                          //                   ),
-                                          //                 );
-                                          //               },
-                                          //               child: const Text(
-                                          //                 "Verify Code  ",
-                                          //                 style: TextStyle(
-                                          //                     color: Colors
-                                          //                         .white,
-                                          //                     fontSize: 23),
-                                          //                 textAlign: TextAlign
-                                          //                     .center,
-                                          //               ),
-                                          //               style: ElevatedButton
-                                          //                   .styleFrom(
-                                          //                 backgroundColor:
-                                          //                     Colors.green,
-                                          //                 padding:
-                                          //                     const EdgeInsets
-                                          //                         .symmetric(
-                                          //                         horizontal:
-                                          //                             100,
-                                          //                         vertical:
-                                          //                             10),
-                                          //                 shape:
-                                          //                     RoundedRectangleBorder(
-                                          //                   borderRadius:
-                                          //                       BorderRadius
-                                          //                           .circular(
-                                          //                               10.0),
-                                          //                 ),
-                                          //               ),
-                                          //             ),
-                                          //             word:
-                                          //                 "Verify Code Send ",
-                                          //             )));
-                                        },
-                                        child: const Text(
-                                          "Send Code   ",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 23),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.green,
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 100, vertical: 10),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                          ),
-                                        ),
-                                      ),
-                                    )),
-                          );
+                          Navigator.pushNamed(context, Routes.forgetPassword);
                         },
                         child: const Text(
                           'Forgot Password ?',
@@ -231,31 +142,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    /*Padding(
-                padding: EdgeInsets.symmetric( 283, 533, 45, 382),
-                child: TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      "Forget Password ",
-                      style: TextStyle(color: Colors.green, fontSize: 23),
-                    )),
-              ),*/
                     const SizedBox(height: 20),
                     Center(
                       child: ElevatedButton(
                         onPressed: () {
                           LoginScreenCubit.get(context).login();
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //       builder: (context) => Verfication()),
-                          // );
                         },
-                        child: const Text(
-                          "Log In ",
-                          style: TextStyle(color: Colors.white, fontSize: 23),
-                          textAlign: TextAlign.center,
-                        ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
                           padding: const EdgeInsets.symmetric(
@@ -264,22 +156,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                         ),
+                        child: const Text(
+                          "Log In ",
+                          style: TextStyle(color: Colors.white, fontSize: 23),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
-                    /*
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.green,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                  child: Text('Log in'),
-                ),
-              ),*/
                     const SizedBox(height: 20),
                     const Row(
                       children: [
@@ -301,35 +184,34 @@ class _LoginScreenState extends State<LoginScreen> {
                         )),
                       ],
                     ),
-                    SizedBox(height: 15),
+                    const SizedBox(height: 15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.facebook,
                             color: Color.fromARGB(255, 19, 81, 132),
                             size: 47,
                           ),
                           onPressed: () {},
                         ),
-                        SizedBox(width: 30),
+                        const SizedBox(width: 30),
                         GestureDetector(
                           onTap: () {
-                            // Google login action
                           },
-                          child: Container(
+                          child: SizedBox(
                               height: 40,
                               width: 40,
                               child: Image.asset("assets/images/google.png")),
                         ),
                       ],
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
+                        const Text(
                           "Don't have an account? ",
                           style: TextStyle(fontSize: 15),
                         ),
@@ -337,9 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () {
                             Navigator.pushNamed(context, Routes.signupRoute);
                           },
-                          // Navigate to sign up screen
-
-                          child: Text(
+                          child: const Text(
                             'Sign up',
                             style: TextStyle(
                                 color: Colors.green,

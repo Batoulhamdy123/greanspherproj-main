@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:greanspherproj/core/routes_manger/routes.dart';
+import 'package:greanspherproj/features/auth/forgetpassword/view/forget_password_screen.dart';
 import 'package:greanspherproj/features/auth/send_confirm_email_code/view/send_confirm_email_screen.dart';
 
 import '../../features/auth/login/view/pages/login_screen.dart';
@@ -18,8 +19,8 @@ class RouteGenerator {
       case Routes.confirmEmail:
         return MaterialPageRoute(
             builder: (_) => const SendConfirmEmailScreen());
-      // case Routes.verifyRegister:
-      //   return MaterialPageRoute(builder: (_) =>  ConfirmEmailScreen());
+      case Routes.forgetPassword:
+        return MaterialPageRoute(builder: (_) => const ForgetPasswordScreen());
       case Routes.signInRoute:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case Routes.signupRoute:
