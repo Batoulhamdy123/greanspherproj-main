@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greanspherproj/features/auth/login/controller/cubit/logincubit_cubit.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Home/view/home_screen.dart';
+import 'package:greanspherproj/features/dashboard/view/dashboardpage.dart';
 
 import '../../../../../core/resource/app_assets.dart';
 import '../../../../../core/routes_manger/routes.dart';
@@ -44,13 +46,13 @@ class _LoginScreenState extends State<LoginScreen> {
             title: "success",
             message: "Login Successfully",
           );
-          // Future.delayed(const Duration(seconds: 1)).then((_) {
-          //   Navigator.push(
-          //     context,
-          //     MaterialPageRoute(builder: (context) => Verfication()),
-          //   );
-          //   // Navigator.pushReplacementNamed(context, Verfication() as String);
-          // });
+          Future.delayed(const Duration(seconds: 1)).then((_) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DahboardPage()),
+            );
+            // Navigator.pushReplacementNamed(context, Verfication() as String);
+          });
         }
       },
       child: Scaffold(
@@ -198,8 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(width: 30),
                         GestureDetector(
-                          onTap: () {
-                          },
+                          onTap: () {},
                           child: SizedBox(
                               height: 40,
                               width: 40,

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greanspherproj/core/resource/context.dart';
-import 'package:greanspherproj/features/auth/forgetpassword/controller/cubit/forget_password_screen_cubit.dart';
-import 'package:greanspherproj/features/auth/reset_password/pages/reset_password_screen.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Home/view/home_screen.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../../../../../core/widget/dialog_utils.dart';
@@ -10,40 +9,31 @@ import '../../../../../core/widget/imageforget.dart';
 import '../../controller/cubit/confirm_email_code_cubit.dart';
 import '../../controller/cubit/confirm_email_code_state.dart';
 
-class ConfirmEmailScreen extends StatefulWidget {
+class ConfirmEmailScreen extends StatelessWidget {
   final String email;
   final String provider;
   final String fromScreen;
 
-  const ConfirmEmailScreen({
+  ConfirmEmailScreen({
     super.key,
     required this.email,
     required this.provider,
     required this.fromScreen,
   });
 
-  @override
-  State<ConfirmEmailScreen> createState() => _ConfirmEmailScreenState();
-}
-
-class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
-  @override
-  void initState() {
-    super.initState();
-    ConfirmEmailCodeCubit.get(context).startTimer();
-  }
+  int counter = 60;
 
   @override
   Widget build(BuildContext context) {
-    String enteredCode = '';
-
-    return BlocConsumer<ConfirmEmailCodeCubit, ConfirmEmailCodeState>(
-        bloc: ConfirmEmailCodeCubit.get(context),
+    return BlocListener<ConfirmEmailCodeCubit, ConfirmEmailCodeState>(
+      bloc: ConfirmEmailCodeCubit.get(context),
       listener: (context, state) {
         if (state is ConfirmEmailCodeLoadingState) {
           DialogUtils.showLoading(context: context, message: "Loading....");
         } else if (state is ConfirmEmailCodeErrorState) {
           DialogUtils.hideLoading(context);
+          print(
+              "Error occurred: ${state.failures.errorMessage}"); // Displaying error in console
 
           DialogUtils.showMessage(
             context: context,
@@ -55,41 +45,20 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
           DialogUtils.showMessage(
             context: context,
             title: "success",
-            message: "The operation was completed successfully..",
+            message:
+                "The confirmation email code has been sent to your email successfully. Check your inbox.",
+          );
+          Future.delayed(const Duration(seconds: 1)).then((_) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
             );
-            Future.delayed(const Duration(seconds: 1)).then((_) {
-              if (widget.fromScreen == 'SendConfirmEmailScreen') {
-                // Navigator.push(
-                //   context,
-                //   // MaterialPageRoute(builder: (context) => LoginSuccessScreen()),
-                // );
-              } else if (widget.fromScreen == 'ForgetPasswordScreen') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ResetPasswordScreen(
-                          email: ForgetPasswordScreenCubit.get(context)
-                              .emailController
-                              .text
-                              .trim(),
-                          code: ConfirmEmailCodeCubit.get(context)
-                              .pinCodeController
-                              .text
-                              .trim())),
-                );
-              }
-            });
-          }
+            // Navigator.pushReplacementNamed(context, Verification() as String);
+          });
+        }
       },
-        builder: (context, state) {
-          int counter = 60;
-
-          if (state is ConfirmEmailCodeTimerTick) {
-            counter = state.counter;
-          }
-          child:
-          return Scaffold(
-              appBar: AppBar(
+      child: Scaffold(
+          appBar: AppBar(
             backgroundColor: Colors.white,
             leading: const Icon(Icons.arrow_back_ios),
           ),
@@ -137,7 +106,10 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                     length: 6,
                     obscureText: true,
                     obscuringCharacter: '*',
-                        blinkWhenObscuring: true,
+                    // obscuringWidget: const FlutterLogo(
+                    //   size: 24,
+                    // ),
+                    blinkWhenObscuring: true,
                     animationType: AnimationType.fade,
                     validator: (v) {
                       if (v!.length < 3) {
@@ -159,14 +131,15 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                         activeColor: Colors.green,
                         selectedFillColor: Colors.black,
                         fieldOuterPadding:
-                                EdgeInsets.only(right: context.width / 30)),
-                        cursorColor: Colors.white,
+                            EdgeInsets.only(right: context.width / 30)),
+                    cursorColor: Colors.white,
                     animationDuration: const Duration(milliseconds: 300),
                     enableActiveFill: true,
+                    // errorAnimationController: errorController ,
 
-                    controller: ConfirmEmailCodeCubit.get(context)
-                            .pinCodeController,
-                        keyboardType: TextInputType.number,
+                    controller:
+                        ConfirmEmailCodeCubit.get(context).pinCodeController,
+                    keyboardType: TextInputType.number,
                     boxShadows: const [
                       BoxShadow(
                         offset: Offset(0, 1),
@@ -174,82 +147,53 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                         blurRadius: 20,
                       )
                     ],
-                        onChanged: (value) {
-                          setState(() {
-                            enteredCode = value;
-                          });
-                        },
-                        onCompleted: (code) {
-                          ConfirmEmailCodeCubit.get(context)
-                              .sendConfirmEmailCode(
-                            widget.provider,
-                            widget.email,
-                          );
-                        },
-                        beforeTextPaste: (text) {
+                    onCompleted: (v) {
+                      debugPrint("Completed");
+                    },
+                    // onTap: () {
+                    //   print("Pressed");
+                    // },
+                    // onChanged: (value) {
+                    //   debugPrint(value);
+                    //   setState(() {
+                    //    currentText = value;
+                    //   }
+                    //   );
+                    // },
+                    beforeTextPaste: (text) {
                       debugPrint("Allowing to paste $text");
+                      //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
+                      //but you can show anything you want here, like your pop up saying wrong paste format or etc
                       return true;
                     },
                   ),
                 ),
                 Center(
-                      child: BlocBuilder<ConfirmEmailCodeCubit,
-                          ConfirmEmailCodeState>(
-                        builder: (context, state) {
-                          int counter =
-                              ConfirmEmailCodeCubit.get(context).counter;
-                          if (state is ConfirmEmailCodeTimerTick) {
-                            counter = state.counter;
-                          }
-
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "00:${counter.toString().padLeft(2, '0')} sec",
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(width: 5),
-                              TextButton(
-                                onPressed: counter == 0
-                                    ? () {
-                                        ConfirmEmailCodeCubit.get(context)
-                                            .resetTimer();
-                                        if (widget.fromScreen ==
-                                            'ForgetPasswordScreen') {
-                                          ForgetPasswordScreenCubit.get(context)
-                                              .emailController
-                                              .text = widget.email;
-                                          ForgetPasswordScreenCubit.get(context)
-                                              .forgetPasswordConfirmEmailCode(
-                                                  widget.provider);
-                                        } else if (widget.fromScreen ==
-                                            'SendConfirmEmailScreen') {
-                                          ConfirmEmailCodeCubit.get(context)
-                                              .sendConfirmEmailCode(
-                                                  widget.provider,
-                                                  widget.email);
-                                        }
-                                        // ForgetPasswordScreenCubit.get(context).emailController.text = widget.email;
-                                        // ForgetPasswordScreenCubit.get(context).forgetPasswordConfirmEmailCode(widget.provider);
-                                      }
-                                    : null,
-                                child: const Text(
-                                  'Send Again',
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 17,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        "00: $counter sec",
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+                      const SizedBox(
+                        width: 3,
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text(
+                          'Send Again ',
+                          style: TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(
                   height: 5,
@@ -258,9 +202,8 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       ConfirmEmailCodeCubit.get(context)
-                              .sendConfirmEmailCode(
-                                  widget.provider, widget.email);
-                        },
+                          .sendConfirmEmailCode(provider, email);
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       padding: const EdgeInsets.symmetric(
@@ -293,7 +236,9 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
                 )
               ],
             ),
-              ));
-        });
+          )),
+    );
   }
+
+  InputDecoration decoration = const InputDecoration();
 }

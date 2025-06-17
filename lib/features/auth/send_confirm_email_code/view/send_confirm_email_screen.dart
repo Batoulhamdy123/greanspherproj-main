@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Home/view/home_screen.dart';
 
 import '../../../../core/widget/custom_text_field.dart';
 import '../../../../core/widget/dialog_utils.dart';
@@ -41,7 +42,6 @@ class SendConfirmEmailScreen extends StatelessWidget {
                 "The confirmation email code has been sent to your email successfully. Check your inbox.",
           );
           Future.delayed(const Duration(seconds: 1)).then((_) {
-
             Navigator.push(
               context,
               MaterialPageRoute(
