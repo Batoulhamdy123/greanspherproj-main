@@ -1,5 +1,5 @@
 class CategoryResponseEntity {
-  List<dynamic>? value;
+  List<CategoryEntity>? value;
   bool? isSuccess;
   bool? isFailure;
   String? message;
@@ -13,5 +13,19 @@ class CategoryResponseEntity {
     this.message,
     this.errors,
     this.statusCode,
+  });
+}
+
+class CategoryEntity {
+  String? name;
+  String? description;
+  int? totalProducts;
+  String? id;
+
+  CategoryEntity({
+    this.name,
+    this.description,
+    this.totalProducts,
+    this.id,
   });
 }

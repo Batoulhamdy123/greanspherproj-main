@@ -3,7 +3,9 @@ import 'package:greanspherproj/data/data_source/remote_data_sourse/home_remote_d
 import 'package:greanspherproj/domain/entities/CategoryResposeEntity.dart';
 import 'package:greanspherproj/domain/failures.dart';
 import 'package:greanspherproj/domain/repository/home_repository.dart';
+import 'package:injectable/injectable.dart';
 
+@Injectable(as: HomeRepository)
 class HomeRepositoryImpl implements HomeRepository {
   HomeRemoteDataSourse homeRemoteDataSourse;
   HomeRepositoryImpl({required this.homeRemoteDataSourse});

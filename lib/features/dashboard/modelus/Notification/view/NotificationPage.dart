@@ -108,7 +108,6 @@ class _NotificationsPageState extends State<NotificationsPage>
     );
   }
 
-  // 🏗️ Widget لعرض محتوى فارغ مع نص محدد
   Widget _buildEmptyContent(String text) {
     return Center(
       child: Text(

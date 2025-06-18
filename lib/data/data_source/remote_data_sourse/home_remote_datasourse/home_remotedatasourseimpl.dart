@@ -7,7 +7,9 @@ import 'package:greanspherproj/data/data_source/remote_data_sourse/home_remote_d
 import 'package:greanspherproj/data/model/CategoryResponseDto.dart';
 
 import 'package:greanspherproj/domain/failures.dart';
+import 'package:injectable/injectable.dart';
 
+@Injectable(as: HomeRemoteDataSourse)
 class HomeRemotedatasourseimpl implements HomeRemoteDataSourse {
   ApiManager apiManager;
   HomeRemotedatasourseimpl({required this.apiManager});

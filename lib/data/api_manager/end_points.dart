@@ -1,5 +1,6 @@
 class EndPoints {
   static const String register = '/api/v1/auth/register';
+  static const String getcategory = '/api/v1/categories';
   static const String login = '/api/v1/auth/login-user';
   static const String confirmEmailCode = '/api/v1/auth/confirm-email';
   static const String forgetPassword = '/api/v1/auth/forgot-password';
