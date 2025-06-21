@@ -24,7 +24,7 @@ class DahboardPage extends StatelessWidget {
               controller: controller.pageController,
               onPageChanged: controller.OnChangeTabIndex,
               children: [
-                HomeScreen(),
+                // HomeScreen(),
                 ComponentPage(),
                 NotificationsPage(),
                 ProfileScreen(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greanspherproj/core/resource/context.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Component/view/ComponentPage.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Home/view/home_screen.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
@@ -51,7 +52,7 @@ class ConfirmEmailScreen extends StatelessWidget {
           Future.delayed(const Duration(seconds: 1)).then((_) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
+              MaterialPageRoute(builder: (context) => ComponentPage()),
             );
             // Navigator.pushReplacementNamed(context, Verification() as String);
           });
