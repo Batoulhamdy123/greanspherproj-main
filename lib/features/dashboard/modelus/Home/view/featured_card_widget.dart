@@ -5,17 +5,17 @@ class FeaturedCardWidget extends StatelessWidget {
   final String imagePath;
 
   const FeaturedCardWidget({
-    Key? key,
+    super.key,
     required this.title,
     required this.imagePath,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 200,
       height: 200,
-      margin: EdgeInsets.only(right: 8),
+      margin: const EdgeInsets.only(right: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
@@ -23,7 +23,7 @@ class FeaturedCardWidget extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 4,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -33,7 +33,7 @@ class FeaturedCardWidget extends StatelessWidget {
           Stack(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
                 ),
@@ -44,7 +44,7 @@ class FeaturedCardWidget extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              Positioned(
+              const Positioned(
                 top: 50,
                 right: 6,
                 child: CircleAvatar(
@@ -63,7 +63,7 @@ class FeaturedCardWidget extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
               ),
@@ -77,53 +77,3 @@ class FeaturedCardWidget extends StatelessWidget {
   }
 }
 
-/*import 'package:flutter/material.dart';
-
-class FeaturedCardWidget extends StatelessWidget {
-  final String title;
-  final String imagePath;
-
-  const FeaturedCardWidget({
-    Key? key,
-    required this.title,
-    required this.imagePath,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-          ),
-        ),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            color: Colors.black.withOpacity(0.5),
-            padding: EdgeInsets.all(6),
-            child: Text(
-              title,
-              style: TextStyle(color: Colors.white, fontSize: 12),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        Positioned(
-          top: 6,
-          right: 6,
-          child: Icon(Icons.play_circle_fill, color: Colors.white),
-        ),
-      ],
-    );
-  }
-}
-*/

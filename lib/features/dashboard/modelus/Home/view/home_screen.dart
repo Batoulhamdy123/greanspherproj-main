@@ -4,9 +4,10 @@ import 'package:greanspherproj/di/di.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Home/model/cubit/home_view_model_cubit.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Reward/view/Reward.dart';
 import 'package:greanspherproj/features/dashboard/modelus/chatbot/chatbotpage.dart';
-import 'package:greanspherproj/features/dashboard/view/dashboardpage.dart';
-import 'search_bar_widget.dart';
+
+import '../model/cubit/home_view_model_state.dart';
 import 'featured_card_widget.dart';
+import 'search_bar_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   final List<String> featuredTitles = [
@@ -29,7 +30,6 @@ class HomeScreen extends StatelessWidget {
   ];
   HomeViewModelCubit viewModel = getIt<HomeViewModelCubit>();
   @override
-  @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeViewModelCubit, HomeViewModelState>(
       bloc: viewModel,
@@ -40,13 +40,13 @@ class HomeScreen extends StatelessWidget {
             child: Stack(
               children: [
                 SingleChildScrollView(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SearchBarWidget(),
+                      const SearchBarWidget(),
 
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
 
                       // 🔁 Horizontal Images
                       SizedBox(
@@ -58,7 +58,7 @@ class HomeScreen extends StatelessWidget {
                             return Container(
                               width: 145,
                               height: 82,
-                              margin: EdgeInsets.only(right: 8),
+                              margin: const EdgeInsets.only(right: 8),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
                                 image: DecorationImage(
@@ -71,11 +71,11 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
 
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
                       // 🌱 Rewards
                       RichText(
-                        text: TextSpan(
+                        text: const TextSpan(
                           text: 'Your ',
                           style: TextStyle(
                               color: Colors.black,
@@ -94,7 +94,7 @@ class HomeScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -127,15 +127,15 @@ class HomeScreen extends StatelessWidget {
                                     child: Container(
                                       width: 10,
                                       height: 10,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         color: Colors.green,
                                         shape: BoxShape.circle,
                                       ),
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 12),
-                                Text(
+                                const SizedBox(width: 12),
+                                const Text(
                                   "807 points",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -149,10 +149,10 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
 
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
 
                       // 🎬 Featured Content
-                      Row(
+                      const Row(
                         children: [
                           Text("Featured Content",
                               style: TextStyle(
@@ -167,13 +167,14 @@ class HomeScreen extends StatelessWidget {
                           )
                         ],
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
 
                       GridView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: featuredTitles.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           mainAxisSpacing: 12,
                           crossAxisSpacing: 12,
@@ -186,7 +187,7 @@ class HomeScreen extends StatelessWidget {
                           );
                         },
                       ),
-                      SizedBox(height: 80), // عشان نسيب مساحة للزر
+                      const SizedBox(height: 80), // عشان نسيب مساحة للزر
                     ],
                   ),
                 ),

@@ -20,16 +20,15 @@ class CategoryResponseDto extends CategoryResponseEntity {
   }
 }
 
-class CategoryEntityDto extends CategoryEntity {
-  CategoryEntityDto({
+class CategoryDto extends CategoryEntity {
+  CategoryDto({
     super.name,
     super.description,
     super.totalProducts,
     super.id,
   });
 
-  factory CategoryEntityDto.fromJson(Map<String, dynamic> json) =>
-      CategoryEntityDto(
+  factory CategoryDto.fromJson(Map<String, dynamic> json) => CategoryDto(
         name: json["name"],
         description: json["description"],
         totalProducts: json["totalProducts"],

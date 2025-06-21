@@ -4,8 +4,9 @@ import 'package:greanspherproj/data/api_manager/api_manager.dart';
 import 'package:greanspherproj/data/api_manager/end_points.dart';
 import 'package:greanspherproj/domain/failures.dart';
 import 'package:injectable/injectable.dart';
+
 import '../../../../../core/resource/constant_manager.dart';
-import '../../../../model/LoginResponseDto .dart';
+import '../../../../model/LoginResponseDto.dart';
 import 'login_remote_data_source.dart';
 
 @Injectable(as: LoginRemoteDataSource)
