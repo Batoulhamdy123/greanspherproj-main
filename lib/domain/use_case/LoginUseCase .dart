@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:greanspherproj/domain/failures.dart';
 import 'package:injectable/injectable.dart';
 
-import '../entities/LoginResponseEntity .dart';
+import '../entities/LoginResponseEntity.dart';
 import '../repository/LoginRepositoryContract.dart';
 
 @injectable

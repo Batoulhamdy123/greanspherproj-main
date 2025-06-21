@@ -1,6 +1,6 @@
-part of 'home_view_model_cubit.dart';
+import '../../../../../../domain/entities/CategoryResposeEntity.dart';
+import '../../../../../../domain/failures.dart';
 
-@immutable
 sealed class HomeViewModelState {}
 
 final class HomeViewModelInitial extends HomeViewModelState {}

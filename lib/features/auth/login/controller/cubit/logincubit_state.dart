@@ -1,4 +1,4 @@
-import '../../../../../domain/entities/LoginResponseEntity .dart';
+import '../../../../../domain/entities/LoginResponseEntity.dart';
 import '../../../../../domain/failures.dart';
 
 abstract class LoginCubitState {}
