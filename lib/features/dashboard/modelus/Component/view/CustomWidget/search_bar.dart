@@ -2,6 +2,193 @@
 import 'package:flutter/material.dart';
 //import 'package:greanspherproj/features/dashboard/modelus/CartPage/cartScreen.dart';
 import 'package:greanspherproj/features/dashboard/modelus/CartPage/view/cartScreen.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Component/view/ComponentPage.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Favourite/view/Favourite.dart';
+//import 'package:greanspherproj/features/dashboard/modelus/Favourite/view/FavouriteScreen.dart'; // استيراد FavouriteScreen
+import 'package:greanspherproj/features/dashboard/modelus/Component/model/app_models_and_api_service.dart';
+
+class SearchBarWidget extends StatefulWidget {
+  final VoidCallback onFilterToggle;
+  final Function(String) onFilterSelected;
+  final Function(String) onSearchSubmitted;
+  final bool isFilterExpanded;
+  final List<Product>
+      cartItems; // هذه القائمة لن تُستخدم، الـ SearchBar الآن ستجلب العدد من الـ API
+  final List<Product>
+      favoriteItems; // هذه القائمة ستستخدم للعرض في Badge المفضلة
+
+  const SearchBarWidget({
+    Key? key,
+    required this.onFilterToggle,
+    required this.onFilterSelected,
+    required this.onSearchSubmitted,
+    required this.isFilterExpanded,
+    required this.cartItems, //
+    required this.favoriteItems,
+    required void Function() onClearAllFavorites,
+    required void Function(Product product) onFavoriteRemoved,
+  }) : super(key: key);
+
+  @override
+  State<SearchBarWidget> createState() => _SearchBarWidgetState();
+}
+
+class _SearchBarWidgetState extends State<SearchBarWidget> {
+  final TextEditingController _searchController = TextEditingController();
+  final ApiService _apiService = ApiService();
+  int _apiCartCount = 0; // لعرض عدد العناصر في أيقونة السلة
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchApiCartCount();
+  }
+
+  // جلب عدد عناصر السلة من الـ API
+  Future<void> _fetchApiCartCount() async {
+    try {
+      int count = await _apiService.fetchCartItemCount();
+      if (mounted) {
+        setState(() {
+          _apiCartCount = count;
+        });
+      }
+    } catch (e) {
+      print("Failed to fetch API cart count in search bar: $e");
+      if (mounted) {
+        setState(() {
+          _apiCartCount = 0;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Stack(
+          children: [
+            IconButton(
+              icon: const ImageIcon(
+                AssetImage("assets/images/markerbasket.png"),
+                size: 35,
+                color: Colors.green,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CartScreen(
+                      cartItems: [],
+                      onRemoveFromCart: (product) {},
+                      onAddToCart: (product, {quantity = 1}) {},
+                    ),
+                  ),
+                ).then((_) {
+                  _fetchApiCartCount(); // تحديث عدد السلة بعد العودة
+                });
+              },
+            ),
+            if (_apiCartCount > 0)
+              Positioned(
+                right: 5,
+                top: 5,
+                child: CircleAvatar(
+                  backgroundColor: Colors.red,
+                  radius: 10,
+                  child: Text(
+                    '$_apiCartCount',
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ),
+              ),
+          ],
+        ),
+        Stack(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.favorite, color: Colors.green),
+              onPressed: () async {
+                // جعل الدالة async
+                final result = await Navigator.push(
+                  // استخدام await للحصول على النتيجة
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FavouriteScreen(
+                      favoriteProducts: ComponentPageState.favoriteProducts,
+                      onRemoveFavorite: ComponentPageState
+                          .handleFavoriteRemovedFromScreenStatic,
+                      onClearAllFavorites: ComponentPageState
+                          .handleClearAllFavoritesFromScreenStatic,
+                    ),
+                  ),
+                );
+                // بعد العودة من FavouriteScreen
+                if (result == true) {
+                  // إذا تم الإشارة إلى تغيير في قائمة المفضلة، نطلب من ComponentPage تحديث المفضلة
+                  // هذا سيتطلب إضافة callback من ComponentPage إلى SearchBarWidget
+                  // حالياً، لا يوجد آلية مباشرة لإخبار ComponentPage بتحديث favoriteProducts
+                  // أفضل حل هو إعادة تحميل المنتجات في ComponentPage عند العودة
+                }
+              },
+            ),
+            // عرض عدد العناصر المفضلة في Badge
+            if (widget.favoriteItems.isNotEmpty)
+              Positioned(
+                right: 5,
+                top: 5,
+                child: CircleAvatar(
+                  backgroundColor: Colors.red,
+                  radius: 10,
+                  child: Text(
+                    '${widget.favoriteItems.length}',
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ),
+              ),
+          ],
+        ),
+        Expanded(
+          child: TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              prefixIcon: IconButton(
+                icon: Icon(
+                  widget.isFilterExpanded
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
+                  size: 35,
+                ),
+                onPressed: widget.onFilterToggle,
+              ),
+              hintText: 'Search products...',
+              suffixIcon: IconButton(
+                icon: const Icon(
+                  Icons.search,
+                  color: Colors.green,
+                ),
+                onPressed: () {
+                  widget.onSearchSubmitted(_searchController.text);
+                },
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onSubmitted: (value) {
+              widget.onSearchSubmitted(value);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+/*// lib/features/dashboard/modelus/Component/view/CustomWidget/search_bar.dart
+import 'package:flutter/material.dart';
+//import 'package:greanspherproj/features/dashboard/modelus/CartPage/cartScreen.dart';
+import 'package:greanspherproj/features/dashboard/modelus/CartPage/view/cartScreen.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Favourite/view/Favourite.dart';
 // تأكد أن هذا هو الاستيراد الوحيد لملف الـ models والـ services الجديد
 import 'package:greanspherproj/features/dashboard/modelus/Component/model/app_models_and_api_service.dart';
@@ -167,7 +354,8 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
       ],
     );
   }
-}
+}*/
+/*
 /*// lib/features/dashboard/modelus/Component/view/CustomWidget/search_bar.dart
 import 'package:flutter/material.dart';
 import 'package:greanspherproj/features/dashboard/modelus/CartPage/view/cartScreen.dart';
@@ -560,4 +748,5 @@ class SearchBarWidget extends StatelessWidget {
     );
   }
 }
+*/
 */

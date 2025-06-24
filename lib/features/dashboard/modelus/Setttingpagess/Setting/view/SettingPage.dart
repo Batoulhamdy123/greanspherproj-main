@@ -12,13 +12,7 @@ class SettingsScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ProfileScreen(userName: "Batoul")),
-            );
-          },
+          onTap: () => Navigator.pop(context),
           child: Image.asset(
             "assets/images/arrowback.png",
             width: 25,

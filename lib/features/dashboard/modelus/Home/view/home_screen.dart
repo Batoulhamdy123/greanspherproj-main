@@ -1,409 +1,699 @@
-// <<<<<<< HEAD
-// // import 'package:flutter/material.dart';
-// // import 'package:flutter_bloc/flutter_bloc.dart';
-// // import 'package:greanspherproj/di/di.dart';
-// // import 'package:greanspherproj/features/dashboard/modelus/Home/model/cubit/home_view_model_cubit.dart';
-// // import 'package:greanspherproj/features/dashboard/modelus/Reward/view/Reward.dart';
-// // import 'package:greanspherproj/features/dashboard/modelus/chatbot/chatbotpage.dart';
-// // import 'package:greanspherproj/features/dashboard/view/dashboardpage.dart';
-// // import 'search_bar_widget.dart';
-// // import 'featured_card_widget.dart';
-// =======
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:greanspherproj/di/di.dart';
-// import 'package:greanspherproj/features/dashboard/modelus/Home/model/cubit/home_view_model_cubit.dart';
-// import 'package:greanspherproj/features/dashboard/modelus/Reward/view/Reward.dart';
-// import 'package:greanspherproj/features/dashboard/modelus/chatbot/chatbotpage.dart';
+// lib/features/dashboard/modelus/Home/view/home_screen.dart
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+//import 'package:greanspherproj/features/dashboard/modelus/Component/model/app_api_service.dart'; // ApiService, PointsSummary, ShortItem, ShortCategory
+import 'package:greanspherproj/features/dashboard/modelus/Component/model/app_models_and_api_service.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Home/view/AllCategoriesScreen.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Home/view/VideosScreen.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Reward/view/Reward.dart';
+//import 'package:greanspherproj/features/dashboard/modelus/Reward/view/RewardsScreen.dart';
+import 'package:greanspherproj/features/dashboard/modelus/chatbot/chatbotpage.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Home/view/featured_card_widget.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Home/view/search_bar_widget.dart';
+// <--- استيراد الشاشة الجديدة لجميع التصنيفات
 
-// import '../model/cubit/home_view_model_state.dart';
-// import 'featured_card_widget.dart';
-// import 'search_bar_widget.dart';
-// >>>>>>> d0a3550bfe11ff0a726fc05cd8da41e2a18d1065
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
-// // class HomeScreen extends StatelessWidget {
-// //   final List<String> featuredTitles = [
-// //     "Hydroponic Plant Diseases",
-// //     "Hydroponics Guide",
-// //     "Hydroponic Components&Usage",
-// //     "Hydroponic Updates&Rewards Notifications"
-// //   ];
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
-// <<<<<<< HEAD
-// //   final List<String> imagePaths = [
-// //     'assets/images/hydropolicplant.png',
-// //     'assets/images/hydropolicguide.png',
-// //     'assets/images/hydropolicusage.png',
-// //     'assets/images/hydropolicupdate.png',
-// //   ];
-// //   final List<String> horizontalImages = [
-// //     'assets/images/scroll1.png',
-// //     'assets/images/scroll2.png',
-// //     'assets/images/scroll3.png',
-// //   ];
-// //   HomeViewModelCubit viewModel = getIt<HomeViewModelCubit>();
-// //   @override
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return BlocBuilder<HomeViewModelCubit, HomeViewModelState>(
-// //       bloc: viewModel,
-// //       builder: (context, state) {
-// //         return Scaffold(
-// //           backgroundColor: Colors.white,
-// //           body: SafeArea(
-// //             child: Stack(
-// //               children: [
-// //                 SingleChildScrollView(
-// //                   padding: EdgeInsets.all(16),
-// //                   child: Column(
-// //                     crossAxisAlignment: CrossAxisAlignment.start,
-// //                     children: [
-// //                       SearchBarWidget(),
+class _HomeScreenState extends State<HomeScreen> {
+  final ApiService _apiService = ApiService();
+  PointsSummary? _pointsSummary;
+  List<ShortCategory> _shortCategories = []; // تصنيفات الفيديوهات
+  bool _isLoadingPoints = true;
+  bool _isLoadingCategories = true;
+  String _errorMessage = '';
+  String _currentUserName = "User";
 
-// //                       SizedBox(height: 10),
+  final List<String> horizontalImages = [
+    'assets/images/scroll1.png',
+    'assets/images/scroll2.png',
+    'assets/images/scroll3.png',
+  ];
 
-// //                       // 🔁 Horizontal Images
-// //                       SizedBox(
-// //                         height: 100,
-// //                         child: ListView.builder(
-// //                           scrollDirection: Axis.horizontal,
-// //                           itemCount: horizontalImages.length,
-// //                           itemBuilder: (context, index) {
-// //                             return Container(
-// //                               width: 145,
-// //                               height: 82,
-// //                               margin: EdgeInsets.only(right: 8),
-// //                               decoration: BoxDecoration(
-// //                                 borderRadius: BorderRadius.circular(12),
-// //                                 image: DecorationImage(
-// //                                   image: AssetImage(horizontalImages[index]),
-// //                                   fit: BoxFit.cover,
-// //                                 ),
-// //                               ),
-// //                             );
-// //                           },
-// //                         ),
-// //                       ),
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
 
-// //                       SizedBox(height: 20),
+  Future<void> _loadData() async {
+    setState(() {
+      _isLoadingPoints = true;
+      _isLoadingCategories = true;
+      _errorMessage = '';
+    });
+    try {
+      String? userName = await ApiService.getCurrentUserName();
+      if (userName != null) {
+        setState(() {
+          _currentUserName = userName;
+        });
+      }
 
-// //                       // 🌱 Rewards
-// //                       RichText(
-// //                         text: TextSpan(
-// //                           text: 'Your ',
-// //                           style: TextStyle(
-// //                               color: Colors.black,
-// //                               fontSize: 18,
-// //                               fontWeight: FontWeight.bold),
-// //                           children: [
-// //                             TextSpan(
-// //                               text: 'GreenSphere ',
-// //                               style: TextStyle(
-// //                                   color: Colors.green,
-// //                                   fontWeight: FontWeight.bold),
-// //                             ),
-// //                             TextSpan(
-// //                                 text: 'Rewards',
-// //                                 style: TextStyle(fontWeight: FontWeight.bold)),
-// //                           ],
-// //                         ),
-// //                       ),
-// //                       SizedBox(height: 10),
-// //                       GestureDetector(
-// //                         onTap: () {
-// //                           Navigator.push(
-// //                             context,
-// //                             MaterialPageRoute(
-// //                                 builder: (context) => RewardsScreen()),
-// //                           );
-// //                         },
-// //                         child: Center(
-// //                           child: Container(
-// //                             width: 193,
-// //                             height: 80,
-// //                             decoration: BoxDecoration(
-// //                               border: Border.all(color: Colors.grey.shade400),
-// //                               borderRadius: BorderRadius.circular(16),
-// //                               color: Colors.white,
-// //                             ),
-// //                             child: Row(
-// //                               mainAxisAlignment: MainAxisAlignment.center,
-// //                               children: [
-// //                                 Container(
-// //                                   width: 30,
-// //                                   height: 30,
-// //                                   decoration: BoxDecoration(
-// //                                     shape: BoxShape.circle,
-// //                                     border: Border.all(
-// //                                         color: Colors.green, width: 2),
-// //                                   ),
-// //                                   child: Center(
-// //                                     child: Container(
-// //                                       width: 10,
-// //                                       height: 10,
-// //                                       decoration: BoxDecoration(
-// //                                         color: Colors.green,
-// //                                         shape: BoxShape.circle,
-// //                                       ),
-// //                                     ),
-// //                                   ),
-// //                                 ),
-// //                                 SizedBox(width: 12),
-// //                                 Text(
-// //                                   "807 points",
-// //                                   style: TextStyle(
-// //                                     fontWeight: FontWeight.bold,
-// //                                     fontSize: 16,
-// //                                     color: Colors.black,
-// //                                   ),
-// //                                 ),
-// //                               ],
-// //                             ),
-// //                           ),
-// //                         ),
-// //                       ),
+      final summary = await _apiService.fetchPointsSummary();
+      setState(() {
+        _pointsSummary = summary;
+        _isLoadingPoints = false;
+      });
 
-// //                       SizedBox(height: 15),
+      final categories =
+          await _apiService.fetchShortCategories(); // <--- جلب التصنيفات
+      setState(() {
+        _shortCategories = categories;
+        _isLoadingCategories = false;
+      });
+    } catch (e) {
+      print("Error loading Home screen data: $e");
+      setState(() {
+        _errorMessage = 'Failed to load data: $e';
+        _isLoadingPoints = false;
+        _isLoadingCategories = false;
+      });
+    }
+  }
 
-// //                       // 🎬 Featured Content
-// //                       Row(
-// //                         children: [
-// //                           Text("Featured Content",
-// //                               style: TextStyle(
-// //                                   fontSize: 20, fontWeight: FontWeight.bold)),
-// //                           Spacer(),
-// //                           Text("View More",
-// //                               style:
-// //                                   TextStyle(fontSize: 18, color: Colors.grey)),
-// //                           Icon(
-// //                             Icons.arrow_forward_ios,
-// //                             color: Colors.grey,
-// //                           )
-// //                         ],
-// //                       ),
-// //                       SizedBox(height: 12),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SearchBarWidget(
+                    // <--- إزالة const لأننا سنمرر parameters
+                    onFilterToggle: () {
+                      // بما أن HomeScreen ليس لديها FilterList، هذه وظيفة dummy
+                      print('Filter toggle from Home Screen (dummy)');
+                    },
+                    onFilterSelected: (filter) {
+                      print(
+                          'Filter selected from Home Screen (dummy): $filter');
+                    },
+                    onSearchSubmitted: (query) {
+                      print(
+                          'Search submitted from Home Screen (dummy): $query');
+                      // TODO: يمكنك هنا إضافة منطق للبحث في المنتجات أو الفيديوهات من الهوم سكرين
+                    },
+                    isFilterExpanded:
+                        false, // لا يوجد filter expanded في Home screen بهذا الشكل
+                    cartItems: const [], // قائمة فارغة حالياً
+                    favoriteItems: const [], // قائمة فارغة حالياً
+                    onFavoriteRemoved: (p) {}, // دالة dummy
+                    onClearAllFavorites: () {}, // دالة dummy
+                  ),
+                  const SizedBox(height: 10),
 
-// //                       GridView.builder(
-// //                         shrinkWrap: true,
-// //                         physics: NeverScrollableScrollPhysics(),
-// //                         itemCount: featuredTitles.length,
-// //                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-// //                           crossAxisCount: 2,
-// //                           mainAxisSpacing: 12,
-// //                           crossAxisSpacing: 12,
-// //                           childAspectRatio: 1.2,
-// //                         ),
-// //                         itemBuilder: (context, index) {
-// //                           return FeaturedCardWidget(
-// //                             title: featuredTitles[index],
-// //                             imagePath: imagePaths[index],
-// //                           );
-// //                         },
-// //                       ),
-// //                       SizedBox(height: 80), // عشان نسيب مساحة للزر
-// //                     ],
-// //                   ),
-// //                 ),
-// =======
-//   final List<String> imagePaths = [
-//     'assets/images/hydropolicplant.png',
-//     'assets/images/hydropolicguide.png',
-//     'assets/images/hydropolicusage.png',
-//     'assets/images/hydropolicupdate.png',
-//   ];
-//   final List<String> horizontalImages = [
-//     'assets/images/scroll1.png',
-//     'assets/images/scroll2.png',
-//     'assets/images/scroll3.png',
-//   ];
-//   HomeViewModelCubit viewModel = getIt<HomeViewModelCubit>();
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<HomeViewModelCubit, HomeViewModelState>(
-//       bloc: viewModel,
-//       builder: (context, state) {
-//         return Scaffold(
-//           backgroundColor: Colors.white,
-//           body: SafeArea(
-//             child: Stack(
-//               children: [
-//                 SingleChildScrollView(
-//                   padding: const EdgeInsets.all(16),
-//                   child: Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       const SearchBarWidget(),
+                  // 🔁 Horizontal Images
+                  SizedBox(
+                    height: 100,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: horizontalImages.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          width: 145,
+                          height: 82,
+                          margin: const EdgeInsets.only(right: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            image: DecorationImage(
+                              image: AssetImage(horizontalImages[index]),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
 
-//                       const SizedBox(height: 10),
+                  const SizedBox(height: 20),
 
-//                       // 🔁 Horizontal Images
-//                       SizedBox(
-//                         height: 100,
-//                         child: ListView.builder(
-//                           scrollDirection: Axis.horizontal,
-//                           itemCount: horizontalImages.length,
-//                           itemBuilder: (context, index) {
-//                             return Container(
-//                               width: 145,
-//                               height: 82,
-//                               margin: const EdgeInsets.only(right: 8),
-//                               decoration: BoxDecoration(
-//                                 borderRadius: BorderRadius.circular(12),
-//                                 image: DecorationImage(
-//                                   image: AssetImage(horizontalImages[index]),
-//                                   fit: BoxFit.cover,
-//                                 ),
-//                               ),
-//                             );
-//                           },
-//                         ),
-//                       ),
+                  // 🌱 Rewards
+                  RichText(
+                    text: TextSpan(
+                      text: 'Your ',
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                      children: [
+                        const TextSpan(
+                            text: 'GreenSphere ',
+                            style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold)),
+                        TextSpan(
+                            text: 'Rewards for $_currentUserName',
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
 
-//                       const SizedBox(height: 20),
+                  // نقاط المكافآت (Card)
+                  _isLoadingPoints
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                              color: Colors.green, strokeWidth: 2))
+                      : _errorMessage.isNotEmpty
+                          ? Center(child: Text(_errorMessage))
+                          : GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const RewardsScreen()),
+                                );
+                              },
+                              child: Center(
+                                child: Container(
+                                  width: 193,
+                                  height: 80,
+                                  decoration: BoxDecoration(
+                                    border:
+                                        Border.all(color: Colors.grey.shade400),
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: Colors.white,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                              color: Colors.green, width: 2),
+                                        ),
+                                        child: Center(
+                                          child: Container(
+                                            width: 10,
+                                            height: 10,
+                                            decoration: const BoxDecoration(
+                                              color: Colors.green,
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        "${_pointsSummary?.totalPoints ?? 0} points",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                  const SizedBox(height: 15),
 
-//                       // 🌱 Rewards
-//                       RichText(
-//                         text: const TextSpan(
-//                           text: 'Your ',
-//                           style: TextStyle(
-//                               color: Colors.black,
-//                               fontSize: 18,
-//                               fontWeight: FontWeight.bold),
-//                           children: [
-//                             TextSpan(
-//                               text: 'GreenSphere ',
-//                               style: TextStyle(
-//                                   color: Colors.green,
-//                                   fontWeight: FontWeight.bold),
-//                             ),
-//                             TextSpan(
-//                                 text: 'Rewards',
-//                                 style: TextStyle(fontWeight: FontWeight.bold)),
-//                           ],
-//                         ),
-//                       ),
-//                       const SizedBox(height: 10),
-//                       GestureDetector(
-//                         onTap: () {
-//                           Navigator.push(
-//                             context,
-//                             MaterialPageRoute(
-//                                 builder: (context) => RewardsScreen()),
-//                           );
-//                         },
-//                         child: Center(
-//                           child: Container(
-//                             width: 193,
-//                             height: 80,
-//                             decoration: BoxDecoration(
-//                               border: Border.all(color: Colors.grey.shade400),
-//                               borderRadius: BorderRadius.circular(16),
-//                               color: Colors.white,
-//                             ),
-//                             child: Row(
-//                               mainAxisAlignment: MainAxisAlignment.center,
-//                               children: [
-//                                 Container(
-//                                   width: 30,
-//                                   height: 30,
-//                                   decoration: BoxDecoration(
-//                                     shape: BoxShape.circle,
-//                                     border: Border.all(
-//                                         color: Colors.green, width: 2),
-//                                   ),
-//                                   child: Center(
-//                                     child: Container(
-//                                       width: 10,
-//                                       height: 10,
-//                                       decoration: const BoxDecoration(
-//                                         color: Colors.green,
-//                                         shape: BoxShape.circle,
-//                                       ),
-//                                     ),
-//                                   ),
-//                                 ),
-//                                 const SizedBox(width: 12),
-//                                 const Text(
-//                                   "807 points",
-//                                   style: TextStyle(
-//                                     fontWeight: FontWeight.bold,
-//                                     fontSize: 16,
-//                                     color: Colors.black,
-//                                   ),
-//                                 ),
-//                               ],
-//                             ),
-//                           ),
-//                         ),
-//                       ),
+                  // 🎬 Featured Content (Categories)
+                  Row(
+                    children: [
+                      const Text("Featured Content",
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
+                      const Spacer(),
+                      GestureDetector(
+                        // <--- زر "View More" الجديد
+                        onTap: () {
+                          // عند الضغط على "View More"، اذهب إلى صفحة كل التصنيفات
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const AllCategoriesScreen()),
+                          );
+                        },
+                        child: const Row(
+                          children: [
+                            Text("View More",
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.grey)),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.grey,
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
 
-//                       const SizedBox(height: 15),
+                  const SizedBox(height: 12),
 
-//                       // 🎬 Featured Content
-//                       const Row(
-//                         children: [
-//                           Text("Featured Content",
-//                               style: TextStyle(
-//                                   fontSize: 20, fontWeight: FontWeight.bold)),
-//                           Spacer(),
-//                           Text("View More",
-//                               style:
-//                                   TextStyle(fontSize: 18, color: Colors.grey)),
-//                           Icon(
-//                             Icons.arrow_forward_ios,
-//                             color: Colors.grey,
-//                           )
-//                         ],
-//                       ),
-//                       const SizedBox(height: 12),
+                  // GridView لتصنيفات الفيديوهات (Short Categories)
+                  _isLoadingCategories
+                      ? const Center(
+                          child: CircularProgressIndicator(color: Colors.green))
+                      : _shortCategories.isEmpty
+                          ? const Center(
+                              child: Text("No video categories available."))
+                          : GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              // عرض أول 4 تصنيفات فقط
+                              itemCount: _shortCategories.length > 4
+                                  ? 4
+                                  : _shortCategories.length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 12,
+                                crossAxisSpacing: 12,
+                                childAspectRatio: 1.2,
+                              ),
+                              itemBuilder: (context, index) {
+                                final category = _shortCategories[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    // عند الضغط على الكاتيجوري، اذهب إلى شاشة الفيديوهات ومرر اسم الـ category
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => VideosScreen(
+                                          categoryName: category
+                                              .name, // تمرير اسم الكاتيجوري
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: FeaturedCardWidget(
+                                    title:
+                                        category.name, // اسم الكاتيجوري كعنوان
+                                    imagePath: _getCategoryThumbnail(
+                                        category.name), // صورة مصغرة للكاتيجوري
+                                    categoryName: category
+                                        .name, // تمرير اسم الكاتيجوري كـ categoryName
+                                  ),
+                                );
+                              },
+                            ),
 
-//                       GridView.builder(
-//                         shrinkWrap: true,
-//                         physics: const NeverScrollableScrollPhysics(),
-//                         itemCount: featuredTitles.length,
-//                         gridDelegate:
-//                             const SliverGridDelegateWithFixedCrossAxisCount(
-//                           crossAxisCount: 2,
-//                           mainAxisSpacing: 12,
-//                           crossAxisSpacing: 12,
-//                           childAspectRatio: 1.2,
-//                         ),
-//                         itemBuilder: (context, index) {
-//                           return FeaturedCardWidget(
-//                             title: featuredTitles[index],
-//                             imagePath: imagePaths[index],
-//                           );
-//                         },
-//                       ),
-//                       const SizedBox(height: 80), // عشان نسيب مساحة للزر
-//                     ],
-//                   ),
-//                 ),
-// >>>>>>> d0a3550bfe11ff0a726fc05cd8da41e2a18d1065
+                  const SizedBox(height: 80),
+                ],
+              ),
+            ),
 
-// //                 // 🤖 زر الشات بوت
-// //                 Positioned(
-// //                   bottom: 20,
-// //                   right: 20,
-// //                   child: GestureDetector(
-// //                     onTap: () {
-// //                       Navigator.push(
-// //                         context,
-// //                         MaterialPageRoute(builder: (context) => ChatBotPage()),
-// //                       );
-// //                     },
-// //                     child: Image.asset(
-// //                       'assets/images/chatbot.png',
-// //                       width: 60,
-// //                       height: 60,
-// //                     ),
-// //                   ),
-// //                 ),
-// //               ],
-// //             ),
-// //           ),
-// //         );
-// //       },
-// //     );
-// //   }
-// // }
+            // 🤖 زر الشات بوت
+            Positioned(
+              bottom: 20,
+              right: 20,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ChatBotPage()),
+                  );
+                },
+                child: Image.asset(
+                  'assets/images/chatbot.png',
+                  width: 60,
+                  height: 60,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // دالة مساعدة للحصول على صورة مصغرة لكل Category (يمكن استبدالها بصور من API لاحقاً)
+  String _getCategoryThumbnail(String categoryName) {
+    switch (categoryName) {
+      case "Hydroponic Plant Diseases":
+        return 'assets/images/hydropolicplant.png';
+      case "Hydroponics Guide":
+        return 'assets/images/hydropolicguide.png';
+      case "Hydroponic Components":
+        return 'assets/images/hydropolicusage.png';
+      case "Rewards and Notifications":
+        return 'assets/images/hydropolicupdate.png';
+      // أضف المزيد من الحالات هنا لبقية Categories
+      default:
+        return 'assets/images/homwpagw11.png'; // صورة افتراضية
+    }
+  }
+
+  // Dummy Callbacks for SearchBarWidget (لو HomeScreen مش بتديرهم بنفسها)
+}
+/*// lib/features/dashboard/modelus/Home/view/home_screen.dart
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+//import 'package:greanspherproj/features/dashboard/modelus/Component/model/app_api_service.dart'; // ApiService, PointsSummary, ShortItem, ShortCategory
+import 'package:greanspherproj/features/dashboard/modelus/Component/model/app_models_and_api_service.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Home/view/VideosScreen.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Reward/view/Reward.dart';
+//import 'package:greanspherproj/features/dashboard/modelus/Reward/view/RewardsScreen.dart';
+import 'package:greanspherproj/features/dashboard/modelus/chatbot/chatbotpage.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Home/view/featured_card_widget.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Home/view/search_bar_widget.dart'; // SearchBarWidget for Home screen
+//import 'package:greanspherproj/features/dashboard/modelus/Videos/view/VideosScreen.dart'; // شاشة عرض الفيديوهات
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final ApiService _apiService = ApiService();
+  PointsSummary? _pointsSummary; // لملخص النقاط
+  List<ShortCategory> _shortCategories = []; // تصنيفات الفيديوهات
+  bool _isLoadingPoints = true;
+  bool _isLoadingCategories = true; // مؤشر تحميل جديد
+  String _errorMessage = '';
+  String _currentUserName = "User"; // لاسم المستخدم
+
+  final List<String> horizontalImages = [
+    'assets/images/scroll1.png',
+    'assets/images/scroll2.png',
+    'assets/images/scroll3.png',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData(); // جلب كل البيانات عند بدء التشغيل
+  }
+
+  Future<void> _loadData() async {
+    setState(() {
+      _isLoadingPoints = true;
+      _isLoadingCategories = true; // تفعيل مؤشر التحميل
+      _errorMessage = '';
+    });
+    try {
+      // جلب اسم المستخدم
+      String? userName = await ApiService.getCurrentUserName();
+      if (userName != null) {
+        setState(() {
+          _currentUserName = userName;
+        });
+      }
+
+      // جلب ملخص النقاط
+      final summary = await _apiService.fetchPointsSummary();
+      setState(() {
+        _pointsSummary = summary;
+        _isLoadingPoints = false;
+      });
+
+      // جلب تصنيفات الفيديوهات (هذا سيحل محل featuredTitles/imagePaths الثابتة)
+      final categories =
+          await _apiService.fetchShortCategories(); // <--- جلب التصنيفات
+      setState(() {
+        _shortCategories = categories;
+        _isLoadingCategories = false;
+      });
+    } catch (e) {
+      print("Error loading Home screen data: $e");
+      setState(() {
+        _errorMessage = 'Failed to load data: $e';
+        _isLoadingPoints = false;
+        _isLoadingCategories = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // في ملف home_screen.dart، داخل دالة build
+// ...
+                  SearchBarWidget(
+                    // <--- إزالة const لأننا سنمرر parameters
+                    onFilterToggle: () {
+                      // بما أن HomeScreen ليس لديها FilterList، هذه وظيفة dummy
+                      print('Filter toggle from Home Screen (dummy)');
+                    },
+                    onFilterSelected: (filter) {
+                      print(
+                          'Filter selected from Home Screen (dummy): $filter');
+                    },
+                    onSearchSubmitted: (query) {
+                      print(
+                          'Search submitted from Home Screen (dummy): $query');
+                      // TODO: يمكنك هنا إضافة منطق للبحث في المنتجات أو الفيديوهات من الهوم سكرين
+                    },
+                    isFilterExpanded:
+                        false, // لا يوجد filter expanded في Home screen بهذا الشكل
+                    cartItems: const [], // قائمة فارغة حالياً
+                    favoriteItems: const [], // قائمة فارغة حالياً
+                    onFavoriteRemoved: (p) {}, // دالة dummy
+                    onClearAllFavorites: () {}, // دالة dummy
+                  ),
+// ...// شريط البحث
+                  const SizedBox(height: 10),
+
+                  // 🔁 Horizontal Images
+                  SizedBox(
+                    height: 100,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: horizontalImages.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          width: 145,
+                          height: 82,
+                          margin: const EdgeInsets.only(right: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            image: DecorationImage(
+                              image: AssetImage(horizontalImages[index]),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // 🌱 Rewards
+                  RichText(
+                    text: TextSpan(
+                      text: 'Your ',
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                      children: [
+                        const TextSpan(
+                            text: 'GreenSphere ',
+                            style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold)),
+                        TextSpan(
+                            text: 'Rewards for $_currentUserName',
+                            style: const TextStyle(
+                                fontWeight:
+                                    FontWeight.bold)), // عرض اسم المستخدم
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  // نقاط المكافآت (Card)
+                  _isLoadingPoints
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                              color: Colors.green, strokeWidth: 2))
+                      : _errorMessage.isNotEmpty
+                          ? Center(child: Text(_errorMessage))
+                          : GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const RewardsScreen()),
+                                );
+                              },
+                              child: Center(
+                                child: Container(
+                                  width: 193,
+                                  height: 80,
+                                  decoration: BoxDecoration(
+                                    border:
+                                        Border.all(color: Colors.grey.shade400),
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: Colors.white,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                              color: Colors.green, width: 2),
+                                        ),
+                                        child: Center(
+                                          child: Container(
+                                            width: 10,
+                                            height: 10,
+                                            decoration: const BoxDecoration(
+                                              color: Colors.green,
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        "${_pointsSummary?.totalPoints ?? 0} points",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                  const SizedBox(height: 15),
+
+                  // 🎬 Featured Content (Categories)
+                  const Row(
+                    children: [
+                      Text("Featured Content",
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
+                      Spacer(),
+                      Text("View More",
+                          style: TextStyle(fontSize: 18, color: Colors.grey)),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.grey,
+                      )
+                    ],
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // GridView لتصنيفات الفيديوهات (Short Categories)
+                  _isLoadingCategories
+                      ? const Center(
+                          child: CircularProgressIndicator(color: Colors.green))
+                      : _shortCategories.isEmpty
+                          ? const Center(
+                              child: Text("No video categories available."))
+                          : GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: _shortCategories.length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 12,
+                                crossAxisSpacing: 12,
+                                childAspectRatio: 1.2,
+                              ),
+                              itemBuilder: (context, index) {
+                                final category = _shortCategories[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    // عند الضغط، اذهب إلى شاشة الفيديوهات ومرر اسم الـ category
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => VideosScreen(
+                                          categoryName: category
+                                              .name, // تمرير اسم الكاتيجوري
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: FeaturedCardWidget(
+                                    title:
+                                        category.name, // اسم الكاتيجوري كعنوان
+                                    imagePath: _getCategoryThumbnail(category
+                                        .name), // صورة مصغرة للكاتيجوري (وهمية)
+                                    categoryName: category
+                                        .name, // تمرير اسم الكاتيجوري كـ categoryName
+                                  ),
+                                );
+                              },
+                            ),
+
+                  const SizedBox(height: 80),
+                ],
+              ),
+            ),
+
+            // 🤖 زر الشات بوت
+            Positioned(
+              bottom: 20,
+              right: 20,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ChatBotPage()),
+                  );
+                },
+                child: Image.asset(
+                  'assets/images/chatbot.png',
+                  width: 60,
+                  height: 60,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // دالة مساعدة للحصول على صورة مصغرة لكل Category (يمكن استبدالها بصور من API لاحقاً)
+  String _getCategoryThumbnail(String categoryName) {
+    switch (categoryName) {
+      case "Hydroponic Plant Diseases":
+        return 'assets/images/hydropolicplant.png';
+      case "Hydroponics Guide":
+        return 'assets/images/hydropolicguide.png';
+      case "Hydroponic Components":
+        return 'assets/images/hydropolicusage.png';
+      case "Rewards and Notifications":
+        return 'assets/images/hydropolicupdate.png';
+      // أضف المزيد من الحالات هنا لبقية Categories
+      default:
+        return 'assets/images/homwpagw11.png'; // صورة افتراضية
+    }
+  }
+}
+*/

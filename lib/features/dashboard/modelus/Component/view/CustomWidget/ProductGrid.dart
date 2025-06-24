@@ -1,5 +1,60 @@
 // lib/features/dashboard/modelus/Component/view/CustomWidget/ProductGrid.dart
 import 'package:flutter/material.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Component/model/app_models_and_api_service.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Component/view/CustomWidget/product_item.dart';
+
+class ProductGrid extends StatelessWidget {
+  final List<Product> products;
+  final Function(Product) onFavoriteToggle;
+  final Function(Product, {int quantity}) onAddToCart;
+  final Function(Product) onRemoveFromCart;
+  final List<Product>
+      favoriteProducts; // هذه القائمة المحلية المفضلة (من ComponentPage)
+  final List<Product>
+      cartProducts; // هذه القائمة المحلية للسلة (من ComponentPage)
+
+  const ProductGrid({
+    Key? key,
+    required this.products,
+    required this.onFavoriteToggle,
+    required this.onAddToCart,
+    required this.onRemoveFromCart,
+    required this.favoriteProducts,
+    required this.cartProducts,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (products.isEmpty) {
+      return const Center(child: Text("No products found."));
+    }
+
+    return GridView.builder(
+      padding: const EdgeInsets.only(top: 10),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.8,
+        crossAxisSpacing: 7,
+        mainAxisSpacing: 10,
+      ),
+      itemCount: products.length,
+      itemBuilder: (context, index) {
+        final product = products[index];
+        // product.isFavorite و product.isInCart سيتم تحديثهما في ComponentPage
+        // لا نحتاج لـ isFavorite كـ parameter منفصل هنا
+        return ProductItem(
+          key: ValueKey(product.id),
+          product: product, // المنتج نفسه يحتوي الآن على isFavorite و isInCart
+          onFavoriteToggle: onFavoriteToggle,
+          onAddToCart: onAddToCart,
+          onRemoveFromCart: onRemoveFromCart, isFavorite: false,
+        );
+      },
+    );
+  }
+}
+/*// lib/features/dashboard/modelus/Component/view/CustomWidget/ProductGrid.dart
+import 'package:flutter/material.dart';
 // تأكد أن هذا هو الاستيراد الوحيد لملف الـ models والـ services الجديد
 import 'package:greanspherproj/features/dashboard/modelus/Component/model/app_models_and_api_service.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Component/view/CustomWidget/product_item.dart';
@@ -55,7 +110,7 @@ class ProductGrid extends StatelessWidget {
       },
     );
   }
-}
+}*/
 /*
 // lib/features/dashboard/modelus/Component/view/CustomWidget/ProductGrid.dart
 import 'package:flutter/material.dart';

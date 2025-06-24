@@ -1,4 +1,5 @@
 import 'package:greanspherproj/domain/entities/LoginResponseEntity.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Component/model/app_models_and_api_service.dart';
 
 class LoginResponseDto extends LoginResponseEntity {
   LoginResponseDto({
@@ -14,6 +15,16 @@ class LoginResponseDto extends LoginResponseEntity {
     statusCode = json['statusCode'];
     succeeded = json['succeeded'];
     message = json['message'];
+    if (succeeded == true && data?.token != null && data?.userName != null) {
+      // <--- إضافة && data?.userName != null
+      DateTime expiryDate = data!.refreshTokenExpiration != null
+          ? DateTime.tryParse(data!.refreshTokenExpiration!) ??
+              DateTime.now().add(const Duration(hours: 24))
+          : DateTime.now().add(const Duration(hours: 24));
+
+      // حفظ الـ Token الجديد واسم المستخدم في shared_preferences
+      ApiService.saveUserAuthToken(data!.token!, expiryDate, data!.userName!);
+    }
   }
 }
 

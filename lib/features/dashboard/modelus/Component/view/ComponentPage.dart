@@ -1,5 +1,535 @@
 // lib/features/dashboard/modelus/Component/ComponentPage.dart
 import 'package:flutter/material.dart';
+//import 'package:greanspherproj/features/dashboard/modelus/CartPage/cartScreen.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Component/model/app_models_and_api_service.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Component/view/CustomWidget/FilterList.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Component/view/CustomWidget/ProductGrid.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Component/view/CustomWidget/search_bar.dart';
+//import 'package:greanspherproj/features/dashboard/modelus/Favourite/view/FavouriteScreen.dart'; // استيراد FavouriteScreen
+
+class ComponentPage extends StatefulWidget {
+  @override
+  ComponentPageState createState() => ComponentPageState();
+}
+
+class ComponentPageState extends State<ComponentPage> {
+  String selectedFilter = '';
+  bool isFilterExpanded = false;
+  static List<Product> favoriteProducts = [];
+  final ApiService _apiService = ApiService();
+  bool _isLoading = true;
+  String _errorMessage = '';
+  List<Product> allProducts = [];
+  List<Product> displayedProducts = [];
+  List<CartItem> _currentBasketItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLocalFavourites();
+    _saveLocalFavouritesStatic();
+    _fetchProducts();
+    _fetchBasketItemsForStatus();
+  }
+
+  Future<void> _loadLocalFavourites() async {
+    List<String> favIds = await ApiService.getLocalFavouriteIds();
+    ComponentPageState.favoriteProducts =
+        allProducts.where((p) => favIds.contains(p.id)).toList();
+    _updateProductStatuses();
+  }
+
+  // حفظ المفضلة في shared_preferences (static)
+  static Future<void> _saveLocalFavouritesStatic() async {
+    List<String> favIds =
+        ComponentPageState.favoriteProducts.map((p) => p.id).toList();
+    await ApiService.saveLocalFavouriteIds(favIds);
+  }
+
+  Future<void> _fetchProducts(
+      {String? productName, String endpoint = '/api/v1/products'}) async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
+    try {
+      List<Product> fetchedProducts = await _apiService.fetchProducts(
+          productName: productName, endpoint: endpoint);
+      setState(() {
+        allProducts = fetchedProducts;
+        _applyFilter();
+        _isLoading = false;
+      });
+      List<String> favIdsFromPrefs = await ApiService.getLocalFavouriteIds();
+      ComponentPageState.favoriteProducts =
+          allProducts.where((p) => favIdsFromPrefs.contains(p.id)).toList();
+
+      _updateProductStatuses();
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Failed to load products: $e';
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _fetchBasketItemsForStatus() async {
+    try {
+      List<CartItem> fetchedItems = await _apiService.fetchBasketItems();
+      setState(() {
+        _currentBasketItems = fetchedItems;
+      });
+      _updateProductStatuses();
+    } catch (e) {
+      print("Failed to fetch basket items for status update: $e");
+    }
+  }
+
+  void _updateProductStatuses() {
+    setState(() {
+      for (var product in allProducts) {
+        product.isInCart =
+            _currentBasketItems.any((item) => item.productId == product.id);
+
+        product.isFavorite = ComponentPageState.favoriteProducts
+            .any((favP) => favP.id == product.id);
+      }
+      _applyFilter();
+    });
+  }
+
+  void _applyFilter() {
+    setState(() {
+      if (selectedFilter.isEmpty || selectedFilter == 'All') {
+        displayedProducts = allProducts;
+      } else {
+        displayedProducts =
+            allProducts.where((p) => p.category == selectedFilter).toList();
+      }
+    });
+  }
+
+  // وظيفة التبديل بين المفضلة (الآن ستكون محلية بالكامل)
+  void _toggleFavorite(Product product) {
+    setState(() {
+      if (ComponentPageState.favoriteProducts
+          .any((favP) => favP.id == product.id)) {
+        ComponentPageState.favoriteProducts
+            .removeWhere((favP) => favP.id == product.id);
+        product.isFavorite = false;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${product.name} removed from favorites ')),
+        );
+      } else {
+        ComponentPageState.favoriteProducts.add(product);
+        product.isFavorite = true;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${product.name} added to favorites ')),
+        );
+      }
+      _saveLocalFavouritesStatic();
+      _updateProductStatuses();
+    });
+  }
+
+  // دالة تُستدعى من FavouriteScreen لحذف منتج (static)
+  static void handleFavoriteRemovedFromScreenStatic(Product product) {
+    ComponentPageState.favoriteProducts
+        .removeWhere((favP) => favP.id == product.id);
+    _saveLocalFavouritesStatic();
+  }
+
+  // دالة تُستدعى من FavouriteScreen لمسح كل المفضلة (static)
+  static void handleClearAllFavoritesFromScreenStatic() {
+    ComponentPageState.favoriteProducts.clear();
+    _saveLocalFavouritesStatic();
+  }
+
+  Future<void> _handleAddToCart(Product product, {int quantity = 1}) async {
+    try {
+      await _apiService.addProductToBasket(product.id, quantity);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${product.name} added to cart successfully!')),
+      );
+      await _fetchBasketItemsForStatus();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add ${product.name} to cart: $e')),
+      );
+      print("Error adding to cart from ComponentPage: $e");
+    }
+  }
+
+  Future<void> _handleRemoveFromCart(Product product) async {
+    try {
+      await _apiService.removeProductFromBasket(product.id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${product.name} removed from cart.')),
+      );
+      await _fetchBasketItemsForStatus();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Failed to remove ${product.name} from cart: $e')),
+      );
+      print("Error removing from cart from ComponentPage: $e");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 2,
+        title: SearchBarWidget(
+          onFilterToggle: () {
+            setState(() {
+              isFilterExpanded = !isFilterExpanded;
+            });
+          },
+          onFilterSelected: (filter) {
+            setState(() {
+              selectedFilter = filter;
+              isFilterExpanded = false;
+            });
+            _applyFilter();
+          },
+          onSearchSubmitted: (query) {
+            _fetchProducts(productName: query);
+          },
+          isFilterExpanded: isFilterExpanded,
+          cartItems: _currentBasketItems
+              .map((ci) =>
+                  ci.productDetails ??
+                  Product(
+                      id: '',
+                      name: 'Unknown Product',
+                      description: '',
+                      imageUrl: 'assets/images/egypt.png',
+                      price: 0,
+                      rate: 0,
+                      category: ''))
+              .toList(), // <--- هذا هو السطر المُعدّل
+          favoriteItems: favoriteProducts,
+          onClearAllFavorites: () {},
+          onFavoriteRemoved:
+              (Product product) {}, // تمرير قائمة المفضلة المحلية
+        ),
+      ),
+      body: Stack(
+        children: [
+          _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(color: Colors.green))
+              : _errorMessage.isNotEmpty
+                  ? Center(child: Text(_errorMessage))
+                  : ProductGrid(
+                      products: displayedProducts,
+                      onFavoriteToggle:
+                          _toggleFavorite, // ربط بـ _toggleFavorite المحلية
+                      onAddToCart: _handleAddToCart,
+                      onRemoveFromCart: _handleRemoveFromCart,
+                      favoriteProducts:
+                          favoriteProducts, // تمرير قائمة المفضلة المحلية
+                      cartProducts: _currentBasketItems
+                          .map((ci) =>
+                              ci.productDetails ??
+                              Product(
+                                  id: '',
+                                  name: 'Unknown Product',
+                                  description: '',
+                                  imageUrl: 'assets/images/egypt.png',
+                                  price: 0,
+                                  rate: 0,
+                                  category: ''))
+                          .toList(),
+                    ),
+          if (isFilterExpanded)
+            Positioned(
+              top: kToolbarHeight,
+              left: 0,
+              right: 0,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(color: Colors.black26, blurRadius: 5),
+                  ],
+                ),
+                child: FilterList(onFilterSelected: (filter) {
+                  setState(() {
+                    selectedFilter = filter;
+                    isFilterExpanded = false;
+                  });
+                  _applyFilter();
+                }),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+/*// lib/features/dashboard/modelus/Component/ComponentPage.dart
+import 'package:flutter/material.dart';
+//import 'package:greanspherproj/features/dashboard/modelus/CartPage/cartScreen.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Component/model/app_models_and_api_service.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Component/view/CustomWidget/FilterList.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Component/view/CustomWidget/ProductGrid.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Component/view/CustomWidget/search_bar.dart';
+
+class ComponentPage extends StatefulWidget {
+  @override
+  ComponentPageState createState() => ComponentPageState();
+}
+
+class ComponentPageState extends State<ComponentPage> {
+  String selectedFilter = '';
+  bool isFilterExpanded = false;
+  List<Product> favoriteProducts = []; // قائمة المفضلة الآن محلية بالكامل
+
+  final ApiService _apiService = ApiService();
+  bool _isLoading = true;
+  String _errorMessage = '';
+  List<Product> allProducts = [];
+  List<Product> displayedProducts = [];
+  List<CartItem> _currentBasketItems = [];
+
+  static var handleFavoriteRemovedFromScreenStatic;
+
+  static var handleClearAllFavoritesFromScreenStatic; // لتتبع عناصر السلة من الـ API (لضبط isInCart)
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLocalFavourites(); // جلب المفضلة من shared_preferences عند بدء التشغيل
+    _fetchProducts();
+    _fetchBasketItemsForStatus();
+  }
+
+  // جلب المفضلة من shared_preferences
+  Future<void> _loadLocalFavourites() async {
+    List<String> favIds = await ApiService.getLocalFavouriteIds();
+    setState(() {
+      favoriteProducts = allProducts.where((p) => favIds.contains(p.id)).toList();
+    });
+    updateProductStatuses(); // تحديث حالة المنتجات بعد تحميل المفضلة المحلية
+  }
+
+  // حفظ المفضلة في shared_preferences
+  Future<void> _saveLocalFavourites() async {
+    List<String> favIds = favoriteProducts.map((p) => p.id).toList();
+    await ApiService.saveLocalFavouriteIds(favIds);
+  }
+
+  // جلب المنتجات الرئيسية من الـ API
+  Future<void> _fetchProducts({String? productName, String endpoint = '/api/v1/products'}) async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
+    try {
+      List<Product> fetchedProducts = await _apiService.fetchProducts(
+          productName: productName, endpoint: endpoint);
+      setState(() {
+        allProducts = fetchedProducts;
+      });
+      updateProductStatuses(); // تحديث حالة المنتجات بعد جلب المنتجات
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Failed to load products: $e';
+        _isLoading = false;
+      });
+    }
+  }
+
+  // جلب عناصر السلة لتحديث حالة isInCart للمنتجات في Grid
+  Future<void> _fetchBasketItemsForStatus() async {
+    try {
+      List<CartItem> fetchedItems = await _apiService.fetchBasketItems();
+      setState(() {
+        _currentBasketItems = fetchedItems;
+      });
+      updateProductStatuses(); // تحديث حالة المنتجات بعد جلب السلة
+    } catch (e) {
+      print("Failed to fetch basket items for status update: $e");
+    }
+  }
+
+  // دالة لتحديث حالات isInCart و isFavorite لكل المنتجات بعد جلب بيانات السلة والمفضلة
+  void updateProductStatuses() { // تم إزالة '_' لجعلها عامة
+    setState(() {
+      for (var product in allProducts) {
+        product.isInCart = _currentBasketItems.any((item) => item.product.id == product.id);
+        product.isFavorite = favoriteProducts.any((favP) => favP.id == product.id);
+      }
+      _applyFilter();
+    });
+  }
+
+  // فلترة المنتجات المعروضة
+  void _applyFilter() {
+    setState(() {
+      if (selectedFilter.isEmpty || selectedFilter == 'All') {
+        displayedProducts = allProducts;
+      } else {
+        displayedProducts = allProducts.where((p) => p.category == selectedFilter).toList();
+      }
+    });
+  }
+
+  // وظيفة التبديل بين المفضلة (الآن ستكون محلية بالكامل)
+  void _toggleFavorite(Product product) {
+    setState(() {
+      if (favoriteProducts.any((favP) => favP.id == product.id)) {
+        favoriteProducts.removeWhere((favP) => favP.id == product.id);
+        product.isFavorite = false; // تحديث حالة المنتج
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${product.name} removed from favorites locally.')),
+        );
+      } else {
+        favoriteProducts.add(product);
+        product.isFavorite = true; // تحديث حالة المنتج
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${product.name} added to favorites locally!')),
+        );
+      }
+      _saveLocalFavourites(); // حفظ التغييرات في المفضلة
+      updateProductStatuses(); // تحديث حالة المنتجات في Grid
+    });
+  }
+
+  // دالة تُستدعى من FavouriteScreen لحذف منتج
+  void handleFavoriteRemovedFromScreen(Product product) {
+    setState(() {
+      favoriteProducts.removeWhere((favP) => favP.id == product.id);
+    });
+    _saveLocalFavourites();
+    updateProductStatuses();
+  }
+
+  // دالة تُستدعى من FavouriteScreen لمسح كل المفضلة
+  void handleClearAllFavoritesFromScreen() {
+    setState(() {
+      favoriteProducts.clear();
+      for (var product in allProducts) {
+        product.isFavorite = false;
+      }
+    });
+    _saveLocalFavourites();
+    updateProductStatuses();
+  }
+
+
+  // دوال الإضافة/الحذف التي ستتفاعل مع الـ API مباشرة (للسلة)
+  Future<void> _handleAddToCart(Product product, {int quantity = 1}) async {
+    try {
+      await _apiService.addProductToBasket(product.id, quantity);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${product.name} added to cart successfully!')),
+      );
+      await _fetchBasketItemsForStatus(); // تحديث حالة isInCart بعد الإضافة
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add ${product.name} to cart: $e')),
+      );
+      print("Error adding to cart from ComponentPage: $e");
+    }
+  }
+
+  Future<void> _handleRemoveFromCart(Product product) async {
+    try {
+      await _apiService.removeProductFromBasket(product.id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${product.name} removed from cart.')),
+      );
+      await _fetchBasketItemsForStatus(); // تحديث حالة isInCart بعد الحذف
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to remove ${product.name} from cart: $e')),
+      );
+      print("Error removing from cart from ComponentPage: $e");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 2,
+        title: SearchBarWidget(
+          onFilterToggle: () {
+            setState(() {
+              isFilterExpanded = !isFilterExpanded;
+            });
+          },
+          onFilterSelected: (filter) {
+            setState(() {
+              selectedFilter = filter;
+              isFilterExpanded = false;
+            });
+            _applyFilter();
+          },
+          onSearchSubmitted: (query) {
+            _fetchProducts(productName: query);
+          },
+          isFilterExpanded: isFilterExpanded,
+          cartItems: _currentBasketItems.map((ci) => ci.product).toList(),
+          favoriteItems: favoriteProducts, // تمرير قائمة المفضلة المحلية
+          onFavoriteRemoved: handleFavoriteRemovedFromScreen, // تمرير دالة الحذف
+          onClearAllFavorites: handleClearAllFavoritesFromScreen, // تمرير دالة المسح الكلي
+        ),
+      ),
+      body: Stack(
+        children: [
+          _isLoading
+              ? const Center(child: CircularProgressIndicator(color: Colors.green))
+              : _errorMessage.isNotEmpty
+                  ? Center(child: Text(_errorMessage))
+                  : ProductGrid(
+                      products: displayedProducts,
+                      onFavoriteToggle: _toggleFavorite, // ربط بـ _toggleFavorite المحلية
+                      onAddToCart: _handleAddToCart,
+                      onRemoveFromCart: _handleRemoveFromCart,
+                      favoriteProducts: favoriteProducts, // تمرير قائمة المفضلة المحلية
+                      cartProducts: _currentBasketItems.map((ci) => ci.product).toList(),
+                    ),
+          if (isFilterExpanded)
+            Positioned(
+              top: kToolbarHeight,
+              left: 0,
+              right: 0,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(color: Colors.black26, blurRadius: 5),
+                  ],
+                ),
+                child: FilterList(onFilterSelected: (filter) {
+                  setState(() {
+                    selectedFilter = filter;
+                    isFilterExpanded = false;
+                  });
+                  _applyFilter();
+                }),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}*/
+/*// lib/features/dashboard/modelus/Component/ComponentPage.dart
+import 'package:flutter/material.dart';
 //import 'package:greanspherproj/features/dashboard/modelus/CartPage/cartScreen.dart'; // تأكد من صحة هذا الاستيراد
 // تأكد أن هذا هو الاستيراد الوحيد لملف الـ models والـ services الجديد
 import 'package:greanspherproj/features/dashboard/modelus/Component/model/app_models_and_api_service.dart';
@@ -213,7 +743,7 @@ class ComponentPageState extends State<ComponentPage> {
       ),
     );
   }
-}
+}*/
 /*// lib/features/dashboard/modelus/Component/ComponentPage.dart
 import 'package:flutter/material.dart';
 //import 'package:greanspherproj/features/dashboard/modelus/CartPage/cartScreen.dart';

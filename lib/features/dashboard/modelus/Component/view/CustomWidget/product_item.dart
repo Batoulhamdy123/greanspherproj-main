@@ -1,5 +1,186 @@
 // lib/features/dashboard/modelus/Component/view/CustomWidget/product_item.dart
 import 'package:flutter/material.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Component/model/app_models_and_api_service.dart';
+import 'package:greanspherproj/features/dashboard/modelus/productDetails/product_details_screen.dart';
+
+class ProductItem extends StatefulWidget {
+  final Product product;
+  final Function(Product)
+      onFavoriteToggle; // هذه الدالة يتم تلقيها من ProductGrid
+  final Function(Product, {int quantity}) onAddToCart;
+  final Function(Product) onRemoveFromCart;
+
+  const ProductItem({
+    Key? key,
+    required this.product,
+    required this.onFavoriteToggle, // يجب أن تكون مطلوبة
+    required this.onAddToCart,
+    required this.onRemoveFromCart,
+    required bool isFavorite,
+  }) : super(key: key);
+
+  @override
+  _ProductItemState createState() => _ProductItemState();
+}
+
+class _ProductItemState extends State<ProductItem> {
+  late bool isInCart;
+
+  @override
+  void initState() {
+    super.initState();
+    isInCart = widget.product.isInCart;
+  }
+
+  @override
+  void didUpdateWidget(covariant ProductItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.product.isInCart != oldWidget.product.isInCart) {
+      isInCart = widget.product.isInCart;
+    }
+  }
+
+  void toggleFavorite() {
+    widget.onFavoriteToggle(widget.product);
+  }
+
+  void toggleCart() {
+    setState(() {
+      isInCart = !isInCart;
+    });
+    if (isInCart) {
+      widget.onAddToCart(widget.product, quantity: 1);
+    } else {
+      widget.onRemoveFromCart(widget.product);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProductDetailsScreen(
+              product: widget.product,
+              onAddToCart: widget.onAddToCart,
+              onRemoveFromCart: widget.onRemoveFromCart,
+              onFavoriteToggle:
+                  widget.onFavoriteToggle, // <--- تمرير الدالة هنا
+            ),
+          ),
+        );
+      },
+      child: Card(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        elevation: 2,
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.network(
+                      widget.product.imageUrl,
+                      height: 70,
+                      width: 150,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/images/placeholder.png',
+                          height: 80,
+                          width: 150,
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          widget.product.name,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          isInCart
+                              ? Icons.remove_circle
+                              : Icons.add_circle_outline,
+                          color: Colors.green,
+                        ),
+                        onPressed: toggleCart,
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'EGP ${widget.product.price.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                      if (widget.product.oldPrice != null) ...[
+                        Text(
+                          'EGP ${widget.product.oldPrice!.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                              decoration: TextDecoration.lineThrough,
+                              color: Colors.grey,
+                              fontSize: 15),
+                        ),
+                      ],
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: List.generate(5, (index) {
+                          return Icon(
+                            index < widget.product.rate
+                                ? Icons.star
+                                : Icons.star_border,
+                            color: Colors.green,
+                            size: 16,
+                          );
+                        }),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 5,
+              right: 5,
+              child: IconButton(
+                icon: Icon(
+                  widget.product.isFavorite
+                      ? Icons.favorite
+                      : Icons.favorite_border,
+                  color: Colors.green,
+                ),
+                onPressed: toggleFavorite,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+/*// lib/features/dashboard/modelus/Component/view/CustomWidget/product_item.dart
+import 'package:flutter/material.dart';
 // تأكد أن هذا هو الاستيراد الوحيد لملف الـ models والـ services الجديد
 import 'package:greanspherproj/features/dashboard/modelus/Component/model/app_models_and_api_service.dart';
 import 'package:greanspherproj/features/dashboard/modelus/productDetails/product_details_screen.dart'; // Import the ProductDetailsScreen
@@ -96,14 +277,13 @@ class _ProductItemState extends State<ProductItem> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Image.network(
-                      // استخدام Image.network
                       widget.product.imageUrl,
                       height: 80,
                       width: 150,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Image.asset(
-                          'assets/images/placeholder.png', // Fallback to placeholder
+                          'assets/images/placeholder.png',
                           height: 80,
                           width: 150,
                           fit: BoxFit.cover,
@@ -121,8 +301,11 @@ class _ProductItemState extends State<ProductItem> {
                         ),
                       ),
                       IconButton(
+                        color: Colors.white,
                         icon: Icon(
-                          isInCart ? Icons.remove_circle : Icons.add_circle,
+                          isInCart
+                              ? Icons.remove_circle
+                              : Icons.add_circle_outline,
                           color: Colors.green,
                         ),
                         onPressed: toggleCart,
@@ -186,7 +369,8 @@ class _ProductItemState extends State<ProductItem> {
       ),
     );
   }
-}
+}*/
+/*
 // lib/features/dashboard/modelus/Component/view/CustomWidget/product_item.dart
 /*import 'package:flutter/material.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Component/model/Component_data.dart';
@@ -736,4 +920,4 @@ class _ProductItemState extends State<ProductItem> {
     );
   }
 }
-*/
+*/*/

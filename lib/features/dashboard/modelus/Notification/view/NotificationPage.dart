@@ -105,6 +105,25 @@ class _NotificationsPageState extends State<NotificationsPage>
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        // زر الكاميرا العائم
+        onPressed: () {
+          // TODO: Implement camera logic here
+          // مثلاً، التقاط صورة أو فتح معرض الصور
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Camera button pressed! (Dummy)')),
+          );
+        },
+        backgroundColor: Colors.white,
+        child: const Icon(
+          Icons.camera_alt,
+          color: Colors.green,
+          weight: 54,
+          size: 40,
+        ),
+      ),
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.endFloat, // موضع الزر في الأسفل واليمين
     );
   }
 

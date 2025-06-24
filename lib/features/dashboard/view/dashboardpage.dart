@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greanspherproj/features/dashboard/controller/cubit/dashboardcubit_cubit.dart';
+import 'package:greanspherproj/features/dashboard/modelus/CheckoutScreen/CheckoutScreen.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Component/view/ComponentPage.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Home/view/home_screen.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Notification/view/NotificationPage.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Profile/view/ProfilePage.dart';
+import 'package:greanspherproj/features/dashboard/modelus/historypoints/pointhistory.dart';
 
 class DahboardPage extends StatelessWidget {
   const DahboardPage({
@@ -24,7 +26,7 @@ class DahboardPage extends StatelessWidget {
               controller: controller.pageController,
               onPageChanged: controller.OnChangeTabIndex,
               children: [
-                // HomeScreen(),
+                HomeScreen(),
                 ComponentPage(),
                 NotificationsPage(),
                 ProfileScreen(
