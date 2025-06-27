@@ -10,7 +10,6 @@ import 'package:greanspherproj/features/dashboard/modelus/Reward/view/Reward.dar
 import 'package:greanspherproj/features/dashboard/modelus/chatbot/chatbotpage.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Home/view/featured_card_widget.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Home/view/search_bar_widget.dart';
-// <--- استيراد الشاشة الجديدة لجميع التصنيفات
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final ApiService _apiService = ApiService();
   PointsSummary? _pointsSummary;
-  List<ShortCategory> _shortCategories = []; // تصنيفات الفيديوهات
+  List<ShortCategory> _shortCategories = [];
   bool _isLoadingPoints = true;
   bool _isLoadingCategories = true;
   String _errorMessage = '';
@@ -60,8 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _isLoadingPoints = false;
       });
 
-      final categories =
-          await _apiService.fetchShortCategories(); // <--- جلب التصنيفات
+      final categories = await _apiService.fetchShortCategories();
       setState(() {
         _shortCategories = categories;
         _isLoadingCategories = false;
@@ -89,9 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SearchBarWidget(
-                    // <--- إزالة const لأننا سنمرر parameters
                     onFilterToggle: () {
-                      // بما أن HomeScreen ليس لديها FilterList، هذه وظيفة dummy
                       print('Filter toggle from Home Screen (dummy)');
                     },
                     onFilterSelected: (filter) {
@@ -101,18 +97,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     onSearchSubmitted: (query) {
                       print(
                           'Search submitted from Home Screen (dummy): $query');
-                      // TODO: يمكنك هنا إضافة منطق للبحث في المنتجات أو الفيديوهات من الهوم سكرين
                     },
-                    isFilterExpanded:
-                        false, // لا يوجد filter expanded في Home screen بهذا الشكل
-                    cartItems: const [], // قائمة فارغة حالياً
-                    favoriteItems: const [], // قائمة فارغة حالياً
-                    onFavoriteRemoved: (p) {}, // دالة dummy
-                    onClearAllFavorites: () {}, // دالة dummy
+                    isFilterExpanded: false,
+                    cartItems: const [],
+                    favoriteItems: const [],
+                    onFavoriteRemoved: (p) {},
+                    onClearAllFavorites: () {},
                   ),
                   const SizedBox(height: 10),
-
-                  // 🔁 Horizontal Images
                   SizedBox(
                     height: 100,
                     child: ListView.builder(
@@ -134,10 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                     ),
                   ),
-
                   const SizedBox(height: 20),
-
-                  // 🌱 Rewards
                   RichText(
                     text: TextSpan(
                       text: 'Your ',
@@ -159,8 +148,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-
-                  // نقاط المكافآت (Card)
                   _isLoadingPoints
                       ? const Center(
                           child: CircularProgressIndicator(
@@ -223,8 +210,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                   const SizedBox(height: 15),
-
-                  // 🎬 Featured Content (Categories)
                   Row(
                     children: [
                       const Text("Featured Content",
@@ -232,9 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontSize: 20, fontWeight: FontWeight.bold)),
                       const Spacer(),
                       GestureDetector(
-                        // <--- زر "View More" الجديد
                         onTap: () {
-                          // عند الضغط على "View More"، اذهب إلى صفحة كل التصنيفات
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -256,10 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 12),
-
-                  // GridView لتصنيفات الفيديوهات (Short Categories)
                   _isLoadingCategories
                       ? const Center(
                           child: CircularProgressIndicator(color: Colors.green))
@@ -269,7 +249,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           : GridView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              // عرض أول 4 تصنيفات فقط
                               itemCount: _shortCategories.length > 4
                                   ? 4
                                   : _shortCategories.length,
@@ -284,35 +263,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                 final category = _shortCategories[index];
                                 return GestureDetector(
                                   onTap: () {
-                                    // عند الضغط على الكاتيجوري، اذهب إلى شاشة الفيديوهات ومرر اسم الـ category
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => VideosScreen(
-                                          categoryName: category
-                                              .name, // تمرير اسم الكاتيجوري
+                                          categoryName: category.name,
                                         ),
                                       ),
                                     );
                                   },
                                   child: FeaturedCardWidget(
-                                    title:
-                                        category.name, // اسم الكاتيجوري كعنوان
-                                    imagePath: _getCategoryThumbnail(
-                                        category.name), // صورة مصغرة للكاتيجوري
-                                    categoryName: category
-                                        .name, // تمرير اسم الكاتيجوري كـ categoryName
+                                    title: category.name,
+                                    imagePath:
+                                        _getCategoryThumbnail(category.name),
+                                    categoryName: category.name,
                                   ),
                                 );
                               },
                             ),
-
                   const SizedBox(height: 80),
                 ],
               ),
             ),
-
-            // 🤖 زر الشات بوت
             Positioned(
               bottom: 20,
               right: 20,
@@ -336,7 +308,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // دالة مساعدة للحصول على صورة مصغرة لكل Category (يمكن استبدالها بصور من API لاحقاً)
   String _getCategoryThumbnail(String categoryName) {
     switch (categoryName) {
       case "Hydroponic Plant Diseases":
@@ -347,13 +318,11 @@ class _HomeScreenState extends State<HomeScreen> {
         return 'assets/images/hydropolicusage.png';
       case "Rewards and Notifications":
         return 'assets/images/hydropolicupdate.png';
-      // أضف المزيد من الحالات هنا لبقية Categories
+
       default:
-        return 'assets/images/homwpagw11.png'; // صورة افتراضية
+        return 'assets/images/homwpagw11.png';
     }
   }
-
-  // Dummy Callbacks for SearchBarWidget (لو HomeScreen مش بتديرهم بنفسها)
 }
 /*// lib/features/dashboard/modelus/Home/view/home_screen.dart
 import 'package:flutter/material.dart';

@@ -521,6 +521,118 @@ class RewardProduct {
   }
 }
 
+// في ملف app_api_service.dart، بعد RewardProduct
+// ----------------------------------------------------
+// ORDER Models
+// ----------------------------------------------------
+class OrderSummaryItem {
+  final String id;
+  final String productId;
+  final String productName;
+  final String pictureUrl; // تأكد من أن الـ API يرجعها بهذا الاسم
+  final int quantity;
+  final double unitPrice; // سعر الوحدة
+  final double totalPrice; // سعر الوحدة * الكمية
+
+  OrderSummaryItem({
+    required this.id,
+    required this.productId,
+    required this.productName,
+    required this.pictureUrl,
+    required this.quantity,
+    required this.unitPrice,
+    required this.totalPrice,
+  });
+
+  factory OrderSummaryItem.fromJson(Map<String, dynamic> json) {
+    return OrderSummaryItem(
+      id: json['id'] ?? '',
+      productId: json['productId'] ?? '',
+      productName: json['productName'] ?? '',
+      pictureUrl: json['pictureUrl'] ?? '', // من الـ Response
+      quantity: (json['quantity'] ?? 0).toInt(),
+      unitPrice: (json['unitPrice'] ?? 0.0).toDouble(),
+      totalPrice: (json['totalPrice'] ?? 0.0).toDouble(),
+    );
+  }
+}
+
+class OrderItem {
+  final String id;
+  final double totalOrderPrice; // ID الطلب نفسه (Order ID)
+  final String createdBy;
+  final String customerEmail;
+  final DateTime orderDate;
+  final String orderStatus;
+  final String paymentStatus;
+  final String phoneNumber;
+  final double totalAmount;
+  final double deliveryFee;
+  final String buildingName;
+  final String floor;
+  final String street;
+  final String additionalDirections;
+  final String addressLabel;
+  final String paymentMethod;
+  final String? paymentIntentId;
+  final List<OrderSummaryItem> orderItems; // تفاصيل المنتجات في الطلب
+
+  final bool isRated; // هل تم تقييم الطلب (إذا الـ API يرجعها)
+  final int rating; // تقييم الطلب (إذا الـ API يرجعها)
+
+  OrderItem({
+    required this.totalOrderPrice,
+    required this.id,
+    required this.createdBy,
+    required this.customerEmail,
+    required this.orderDate,
+    required this.orderStatus,
+    required this.paymentStatus,
+    required this.phoneNumber,
+    required this.totalAmount,
+    required this.deliveryFee,
+    required this.buildingName,
+    required this.floor,
+    required this.street,
+    required this.additionalDirections,
+    required this.addressLabel,
+    required this.paymentMethod,
+    this.paymentIntentId,
+    required this.orderItems,
+    this.isRated = false,
+    this.rating = 0,
+  });
+
+  factory OrderItem.fromJson(Map<String, dynamic> json) {
+    return OrderItem(
+        id: json['id'] ?? '',
+        createdBy: json['createdBy'] ?? '',
+        customerEmail: json['customerEmail'] ?? '',
+        orderDate: DateTime.tryParse(json['orderDate'] ?? '') ?? DateTime.now(),
+        orderStatus: json['orderStatus'] ?? '',
+        paymentStatus: json['paymentStatus'] ?? '',
+        phoneNumber: json['phoneNumber'] ?? '',
+        totalAmount: (json['totalAmount'] ?? 0.0).toDouble(),
+        deliveryFee: (json['deliveryFee'] ?? 0.0).toDouble(),
+        buildingName: json['buildingName'] ?? '',
+        floor: json['floor'] ?? '',
+        street: json['street'] ?? '',
+        additionalDirections: json['additionalDirections'] ?? '',
+        addressLabel: json['addressLabel'] ?? '',
+        paymentMethod: json['paymentMethod'] ?? '',
+        paymentIntentId: json['paymentIntentId'],
+        orderItems: (json['orderItems'] as List?)
+                ?.map((itemJson) => OrderSummaryItem.fromJson(itemJson))
+                .toList() ??
+            [],
+        isRated: json['isRated'] ?? false, // إذا الـ API يرجعها
+        rating: (json['rating'] ?? 0).toInt(),
+        totalOrderPrice: (json['totalAmount'] ?? 0.0).toDouble()
+        // إذا الـ API يرجعها
+        );
+  }
+}
+
 // ----------------------------------------------------
 // API Service
 // ----------------------------------------------------
@@ -529,15 +641,14 @@ class ApiService {
   static const String apiKey =
       "5zOBJKQJFQakblcfbrq4GCqStcxxLX6LSQT8j6V6UcavIlTk6pixNw";
   static String? _currentUserName;
-  static String? _userAuthToken; // متغير لحفظ الـ user token
-  static DateTime? _tokenExpiryDate; // تاريخ انتهاء صلاحية الـ Token
+  static String? _userAuthToken;
+  static DateTime? _tokenExpiryDate;
 
-  // دالة لجلب الـ user token من shared_preferences
   static Future<String?> getUserAuthToken() async {
     if (_userAuthToken != null &&
         _tokenExpiryDate != null &&
         DateTime.now().isBefore(_tokenExpiryDate!)) {
-      return _userAuthToken; // لو الـ Token موجود وصالح، استخدمه
+      return _userAuthToken;
     }
     final prefs = await SharedPreferences.getInstance();
     _userAuthToken = prefs.getString('user_auth_token'); // مفتاح حفظ الـ Token
@@ -629,8 +740,6 @@ class ApiService {
     }
   }
 
-  // Fetch Products (Main Product List)
-  // endpoint parameter allows flexibility (e.g., /api/Product or /api/v1/products)
   Future<List<Product>> fetchProducts(
       {String? productName, String endpoint = '/api/v1/products'}) async {
     // Default to /api/v1/products based on image
@@ -1036,6 +1145,147 @@ class ApiService {
     } else {
       throw Exception(
           'Failed to load short categories: ${response.statusCode}');
+    }
+  }
+  // في ملف app_api_service.dart، داخل class ApiService { ... }
+
+// ----------------------------------------------------
+// ORDER API Operations
+// ----------------------------------------------------
+
+// Fetch User Orders (GET /api/v1/orders/me)
+  Future<List<OrderItem>> fetchUserOrders() async {
+    final uri = Uri.parse('$baseUrl/api/v1/orders/me');
+    print('API Request: GET User Orders $uri');
+    print('Request Headers: ${await _headers}');
+
+    final response = await http.get(uri, headers: await _headers);
+
+    print('API Response Status (User Orders): ${response.statusCode}');
+    print('API Response Body (User Orders): ${response.body}');
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+      if (responseBody['isSuccess']) {
+        final List<dynamic> ordersJson = responseBody['value'] ?? [];
+        return ordersJson.map((json) => OrderItem.fromJson(json)).toList();
+      } else {
+        throw Exception(
+            responseBody['message'] ?? 'Failed to load user orders');
+      }
+    } else {
+      throw Exception('Failed to load user orders: ${response.statusCode}');
+    }
+  }
+
+// Create Cash Order (POST /api/v1/orders/me/create-cash-order)
+  Future<void> createCashOrder({
+    required String phoneNumber,
+    required double latitude,
+    required double longitude,
+    required String buildingName,
+    required String floor,
+    required String street,
+    required String additionalDirections,
+    required String addressLabel,
+    required double totalAmount,
+    required double deliveryFee,
+    required List<Map<String, dynamic>> orderItems,
+  }) async {
+    final uri = Uri.parse('$baseUrl/api/v1/orders/me/create-cash-order');
+    final Map<String, dynamic> body = {
+      "phoneNumber": phoneNumber,
+      "latitude":
+          latitude, // يجب أن تحصل على Latitude/Longitude من تحديد الموقع
+      "longitude": longitude,
+      "buildingName": buildingName,
+      "floor": floor,
+      "street": street,
+      "additionalDirections": additionalDirections,
+      "addressLabel": addressLabel,
+    };
+
+    print('API Request: POST Cash Order $uri, Body: ${json.encode(body)}');
+    print('Request Headers: ${await _headers}');
+
+    final response = await http.post(
+      uri,
+      headers: await _headers,
+      body: json.encode(body),
+    );
+
+    print('API Response Status (Create Cash Order): ${response.statusCode}');
+    print('API Response Body (Create Cash Order): ${response.body}');
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+      throw Exception(responseBody['message'] ??
+          'Failed to create cash order: ${response.statusCode}');
+    }
+  }
+// في ملف app_api_service.dart، داخل class ApiService { ... }
+
+// ... (بعد دالة createCashOrder) ...
+
+// Create Online Order (POST /api/v1/orders/me/create-online-order)
+  Future<OrderItem> createOnlineOrder({
+    required String phoneNumber,
+    required double latitude,
+    required double longitude,
+    required String buildingName,
+    required String floor,
+    required String street,
+    required String additionalDirections,
+    required String addressLabel,
+    required double totalAmount,
+    required double deliveryFee,
+    required List<Map<String, dynamic>> orderItems, // تفاصيل المنتجات
+    required String cardNumber, // بيانات البطاقة
+    required String expiryDate,
+    required String cvv,
+  }) async {
+    final uri = Uri.parse(
+        '$baseUrl/api/v1/orders/me/create-online-order'); // Endpoint المتوقع
+    final Map<String, dynamic> body = {
+      "phoneNumber": phoneNumber,
+      "latitude": latitude,
+      "longitude": longitude,
+      "buildingName": buildingName,
+      "floor": floor,
+      "street": street,
+      "additionalDirections": additionalDirections,
+      "addressLabel": addressLabel,
+      "totalAmount": totalAmount,
+      "deliveryFee": deliveryFee,
+      "orderItems": orderItems, // قائمة المنتجات
+      "cardNumber": cardNumber, // بيانات البطاقة
+      "expiryDate": expiryDate,
+      "cvv": cvv,
+    };
+
+    print('API Request: POST Online Order $uri, Body: ${json.encode(body)}');
+    print('Request Headers: ${await _headers}');
+
+    final response = await http.post(
+      uri,
+      headers: await _headers,
+      body: json.encode(body),
+    );
+
+    print('API Response Status (Create Online Order): ${response.statusCode}');
+    print('API Response Body (Create Online Order): ${response.body}');
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+      if (responseBody['isSuccess']) {
+        return OrderItem.fromJson(
+            responseBody['value']); // إرجاع OrderItem كامل
+      } else {
+        throw Exception(
+            responseBody['message'] ?? 'Failed to create online order');
+      }
+    } else {
+      throw Exception('Failed to create online order: ${response.statusCode}');
     }
   }
 }

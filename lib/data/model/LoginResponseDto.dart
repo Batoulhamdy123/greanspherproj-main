@@ -16,13 +16,10 @@ class LoginResponseDto extends LoginResponseEntity {
     succeeded = json['succeeded'];
     message = json['message'];
     if (succeeded == true && data?.token != null && data?.userName != null) {
-      // <--- إضافة && data?.userName != null
       DateTime expiryDate = data!.refreshTokenExpiration != null
           ? DateTime.tryParse(data!.refreshTokenExpiration!) ??
               DateTime.now().add(const Duration(hours: 24))
           : DateTime.now().add(const Duration(hours: 24));
-
-      // حفظ الـ Token الجديد واسم المستخدم في shared_preferences
       ApiService.saveUserAuthToken(data!.token!, expiryDate, data!.userName!);
     }
   }

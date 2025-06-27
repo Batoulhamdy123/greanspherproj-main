@@ -1,6 +1,7 @@
 // lib/features/dashboard/modelus/Checkout/view/AddNewCardScreen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // For TextInputFormatter
+import 'package:greanspherproj/features/dashboard/modelus/Component/model/app_models_and_api_service.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart'; // Ensure you added this package
 
 class AddNewCardScreen extends StatefulWidget {
@@ -15,6 +16,7 @@ class _AddNewCardScreenState extends State<AddNewCardScreen> {
   final TextEditingController _expiryController = TextEditingController();
   final TextEditingController _cvvController = TextEditingController();
   bool _saveCardForLater = false;
+  final ApiService _apiService = ApiService();
 
   final MaskTextInputFormatter _cardNumberFormatter = MaskTextInputFormatter(
     mask: '#### #### #### ####', // Card number mask
@@ -152,11 +154,12 @@ class _AddNewCardScreenState extends State<AddNewCardScreen> {
             const Spacer(), // Pushes content to top, button to bottom
 
             // Pay Now Button
+            // في ملف AddNewCardScreen.dart
+// ...
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // TODO: Implement card payment logic (dummy for now)
                   final cardNumber =
                       _cardNumberController.text.replaceAll(' ', '');
                   final expiry = _expiryController.text;
@@ -172,9 +175,14 @@ class _AddNewCardScreenState extends State<AddNewCardScreen> {
                     return;
                   }
 
-                  // Simulate a successful card add for now
-                  Navigator.pop(context,
-                      "Card ending in ${cardNumber.substring(cardNumber.length - 4)}");
+                  // نرجع بيانات البطاقة كـ Map إلى CheckoutScreen [cite: image_c9f57f.png]
+                  Navigator.pop(context, {
+                    'cardNumber': cardNumber,
+                    'expiryDate': expiry,
+                    'cvv': cvv,
+                    'displayText':
+                        "Card ending in ${cardNumber.substring(cardNumber.length - 4)}", // نص للعرض
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
@@ -182,10 +190,12 @@ class _AddNewCardScreenState extends State<AddNewCardScreen> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                 ),
-                child: const Text("Pay now  EGP 313", // Hardcoded price for now
-                    style: TextStyle(color: Colors.white, fontSize: 18)),
+                child:
+                    const Text("Pay now ", // السعر هنا ثابت، يجب أن يتم تمريره
+                        style: TextStyle(color: Colors.white, fontSize: 18)),
               ),
             ),
+// ...
           ],
         ),
       ),
