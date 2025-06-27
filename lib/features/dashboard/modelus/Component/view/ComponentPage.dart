@@ -160,9 +160,12 @@ class ComponentPageState extends State<ComponentPage> {
     }
   }
 
+  // في ملف ComponentPage.dart
+// ...
   Future<void> _handleRemoveFromCart(Product product) async {
     try {
-      await _apiService.removeProductFromBasket(product.id);
+      await _apiService.removeProductFromBasket(
+          product.id); // <--- تأكد أنك بتبعت product.id هنا
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${product.name} removed from cart.')),
       );
@@ -175,6 +178,7 @@ class ComponentPageState extends State<ComponentPage> {
       print("Error removing from cart from ComponentPage: $e");
     }
   }
+// ...
 
   @override
   Widget build(BuildContext context) {

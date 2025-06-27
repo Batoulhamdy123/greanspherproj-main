@@ -4,7 +4,12 @@ import 'package:greanspherproj/features/dashboard/modelus/Setttingpagess/ChangeP
 import 'package:greanspherproj/features/dashboard/modelus/Setttingpagess/SavedAddress/view/SavedAddressPage.dart';
 
 final List<Map<String, dynamic>> settingsOptions = [
-  {"title": "Account info", "page": AccountInfoScreen()},
+  {
+    "title": "Account info",
+    "page": AccountInfoScreen(
+      onProfileUpdated: () {},
+    )
+  },
   {"title": "Saved Addresses", "page": SavedAddressPage()},
   {"title": "Change email", "page": ChangeEmailScreen()},
   {"title": "Change password", "page": ChangePasswordScreen()},

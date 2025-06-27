@@ -282,7 +282,10 @@
 // lib/features/dashboard/modelus/Component/model/app_models_and_api_service.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:uuid/uuid.dart'; // <--- أضف هذا
 
 // ----------------------------------------------------
 // PRODUCT Model
@@ -334,26 +337,27 @@ class Product {
   }
 }
 
+// في ملف app_api_service.dart
 class CartItem {
-  final String itemId; // ID العنصر في السلة (وليس ID المنتج)
-  final String productId; // ID المنتج
+  final String itemId;
+  final String productId; // <--- هذا هو الـ productId الحقيقي
   int quantity;
-  Product? productDetails; // جديد: لتخزين تفاصيل المنتج بعد جلبها بشكل منفصل
+  Product? productDetails;
 
   CartItem({
     required this.itemId,
-    required this.productId,
+    required this.productId, // <--- يجب أن يكون هنا
     required this.quantity,
     this.productDetails,
   });
 
-  // FromJson لكائن الـ item الواحد داخل "items" array من GET /api/v1/basket/me
   factory CartItem.fromJson(Map<String, dynamic> json) {
     return CartItem(
-      itemId: json['id'] ?? '', // هذا هو الـ ID لمدخل السلة
-      productId: json['productId'] ?? '', // هذا هو الـ ID الخاص بالمنتج
-      quantity: (json['quantity'] ?? 1).toInt(), // الكمية
-      // productDetails سيكون null مبدئياً وسيتم ملؤه لاحقاً
+      itemId: json['id'] ?? '',
+      productId:
+          (json['productId'] ?? '').toString(), // <--- تأكد من .toString() هنا
+      quantity: (json['quantity'] ?? 1).toInt(),
+      // ...
     );
   }
 }
@@ -632,6 +636,98 @@ class OrderItem {
         );
   }
 }
+// في ملف app_api_service.dart
+
+// ... (بعد PointsSummary أو في مكان مناسب للموديلز) ...
+
+// ----------------------------------------------------
+// NOTIFICATION / DISEASE ALERT Model
+// ----------------------------------------------------
+class DiseaseAlertItem {
+  final String id;
+  final String message;
+  final String type; // "Disease", "Healthy", "Update", "Reward"
+  final DateTime date;
+  final String? details; // تفاصيل إضافية أو اسم المرض
+  late final bool isNew; // هل هو إشعار جديد لم يقرأ بعد
+
+  DiseaseAlertItem({
+    required this.id,
+    required this.message,
+    required this.type,
+    required this.date,
+    this.details,
+    this.isNew = true,
+  });
+
+  factory DiseaseAlertItem.fromJson(Map<String, dynamic> json) {
+    return DiseaseAlertItem(
+      id: json['id'] ?? '',
+      message: json['message'] ?? '',
+      type: json['type'] ?? '',
+      date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
+      details: json['details'],
+      isNew: json['isNew'] ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'message': message,
+      'type': type,
+      'date': date.toIso8601String(),
+      'details': details,
+      'isNew': isNew,
+    };
+  }
+}
+
+// في ملف app_api_service.dart، بعد CreditTransaction
+// ----------------------------------------------------
+// USER PROFILE Models
+// ----------------------------------------------------
+class UserProfile {
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String? gender;
+  final DateTime? dateOfBirth;
+  final String? profilePictureUrl;
+
+  const UserProfile({
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    this.gender,
+    this.dateOfBirth,
+    this.profilePictureUrl,
+  });
+
+  factory UserProfile.fromJson(Map<String, dynamic> json) {
+    return UserProfile(
+      firstName: json['firstName'] ?? '',
+      lastName: json['lastName'] ?? '',
+      email: json['email'] ?? '',
+      gender: json['gender'],
+      dateOfBirth: json['dateOfBirth'] != null
+          ? DateTime.tryParse(json['dateOfBirth'])
+          : null,
+      profilePictureUrl: json['profilePictureUrl'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'gender': gender,
+      'dateOfBirth': dateOfBirth?.toIso8601String(),
+      'profilePictureUrl': profilePictureUrl,
+    };
+  }
+}
 
 // ----------------------------------------------------
 // API Service
@@ -643,6 +739,101 @@ class ApiService {
   static String? _currentUserName;
   static String? _userAuthToken;
   static DateTime? _tokenExpiryDate;
+// في ملف app_api_service.dart، داخل class ApiService { ... }
+
+// ----------------------------------------------------
+// USER PROFILE API Operations
+// ----------------------------------------------------
+
+// Fetch User Profile (GET /api/v1/users/profile)
+  Future<UserProfile> fetchUserProfile() async {
+    final uri = Uri.parse('$baseUrl/api/v1/users/profile');
+    print('API Request: GET User Profile $uri');
+    print('Request Headers: ${await _headers}');
+
+    final response = await http.get(uri, headers: await _headers);
+
+    print('API Response Status (User Profile): ${response.statusCode}');
+    print('API Response Body (User Profile): ${response.body}');
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+      if (responseBody['isSuccess']) {
+        return UserProfile.fromJson(responseBody['value'] ?? {});
+      } else {
+        throw Exception(
+            responseBody['message'] ?? 'Failed to load user profile');
+      }
+    } else {
+      throw Exception('Failed to load user profile: ${response.statusCode}');
+    }
+  }
+
+// Edit User Profile (POST /api/v1/users/edit-profile)
+  Future<UserProfile> editUserProfile({
+    required String firstName,
+    required String lastName,
+    required String email,
+    String? gender,
+    DateTime? dateOfBirth,
+    String? profilePictureUrl,
+  }) async {
+    final uri = Uri.parse('$baseUrl/api/v1/users/edit-profile');
+    final Map<String, dynamic> body = {
+      "firstName": firstName,
+      "lastName": lastName,
+      "email": email,
+      "gender": gender,
+      "dateOfBirth": dateOfBirth?.toIso8601String(),
+      "profilePictureUrl": profilePictureUrl,
+    };
+    // إزالة القيم الـ null من الـ body
+    body.removeWhere((key, value) => value == null);
+
+    print('API Request: POST Edit Profile $uri, Body: ${json.encode(body)}');
+    print('Request Headers: ${await _headers}');
+
+    final response = await http.post(
+      uri,
+      headers: await _headers,
+      body: json.encode(body),
+    );
+
+    print('API Response Status (Edit Profile): ${response.statusCode}');
+    print('API Response Body (Edit Profile): ${response.body}');
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+      if (responseBody['isSuccess']) {
+        return UserProfile.fromJson(responseBody['value']);
+      } else {
+        throw Exception(responseBody['message'] ?? 'Failed to edit profile');
+      }
+    } else {
+      throw Exception('Failed to edit profile: ${response.statusCode}');
+    }
+  }
+
+// Delete User Account (DELETE /api/v1/users/me/delete-account)
+  Future<void> deleteUserAccount() async {
+    final uri = Uri.parse('$baseUrl/api/v1/users/me/delete-account');
+    print('API Request: DELETE User Account $uri');
+    print('Request Headers: ${await _headers}');
+
+    final response = await http.delete(uri, headers: await _headers);
+
+    print('API Response Status (Delete Account): ${response.statusCode}');
+    print('API Response Body (Delete Account): ${response.body}');
+
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      print('User account deleted successfully.');
+      await clearUserAuthToken(); // مسح التوكن بعد حذف الحساب
+    } else {
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+      throw Exception(responseBody['message'] ??
+          'Failed to delete account: ${response.statusCode}');
+    }
+  }
 
   static Future<String?> getUserAuthToken() async {
     if (_userAuthToken != null &&
@@ -831,6 +1022,8 @@ class ApiService {
         // نربط تفاصيل المنتج بالـ CartItem الصحيح
         for (var i = 0; i < cartItems.length; i++) {
           cartItems[i].productDetails = productsDetails[i];
+          print(
+              'CartItem ${cartItems[i].itemId} linked to Product ID: ${cartItems[i].productId}, Details: ${productsDetails[i]?.name ?? "Not Found"}');
         }
         return cartItems;
       } else {
@@ -890,26 +1083,34 @@ class ApiService {
 
   // في ملف app_api_service.dart
 // ...
-// Remove an item from the basket (DELETE /api/v1/basket/me/items/{basketItemId})
-// Based on common REST patterns, deleting a specific item is often done via ID in URL
-  Future<void> removeProductFromBasket(String basketItemId) async {
-    // <--- غيّر parameter لـ basketItemId
-    final uri = Uri.parse(
-        '$baseUrl/api/v1/basket/me/items/$basketItemId'); // <--- غيّر الـ URL لإضافة الـ ID
-    print('API Request: DELETE $uri'); // لا يوجد body في هذه الحالة
+// Remove an item from the basket (DELETE /api/v1/basket/me/items)
+// هذا هو الـ Endpoint الذي يتوقع productId في الـ Body
+// في ملف app_api_service.dart
+// ...
+  Future<void> removeProductFromBasket(String productId) async {
+    final uri = Uri.parse('$baseUrl/api/v1/basket/me/items');
+    print('API Request: DELETE $uri, Body: {"productId": "$productId"}');
     print('Request Headers: ${await _headers}');
     final response = await http.delete(
       uri,
       headers: await _headers,
-      // no body needed here as ID is in URL
+      body: json.encode({
+        'productId': productId,
+      }),
     );
 
-    if (response.statusCode != 200 && response.statusCode != 204) {
+    // تأكد أن الكود لا يرمي Exception لو الـ Status Code كان 200 أو 204
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      // النجاح، لا تفعل شيئاً (أو يمكنك طباعة رسالة نجاح)
+      print('Item removed successfully from basket on backend.');
+    } else {
+      // لو الـ Status Code كان أي حاجة تانية غير 200 أو 204، يبقى فيه خطأ
       final Map<String, dynamic> responseBody = json.decode(response.body);
       throw Exception(responseBody['message'] ??
           'Failed to remove item from basket: ${response.statusCode}');
     }
   }
+// ...
 // ...
 
   Future<void> clearBasket() async {
@@ -1288,6 +1489,91 @@ class ApiService {
       throw Exception('Failed to create online order: ${response.statusCode}');
     }
   }
+  // في ملف app_api_service.dart، داخل class ApiService { ... }
+
+// ----------------------------------------------------
+// AI Model Prediction API Operations
+// ----------------------------------------------------
+// هذا الـ Endpoint مختلف عن الـ BaseUrl
+  static const String aiModelBaseUrl =
+      "https://kh-emad-plant-diseases-v2.hf.space/predict"; // <--- Endpoint الـ AI Model
+
+  // في ملف app_api_service.dart
+
+// تأكد من عدم وجود import 'dart:io';
+// ...
+
+  Future<String> uploadPlantImageForPrediction(XFile imageFile) async {
+    // <--- تغير الـ parameter إلى XFile
+    final uri = Uri.parse(aiModelBaseUrl);
+
+    var request = http.MultipartRequest('POST', uri);
+
+    request.headers['Accept-Language'] = 'en-US';
+    request.headers['accept'] = 'application/json; ver=1.0';
+
+    // قراءة الـ bytes من XFile مباشرة
+    List<int> imageBytes =
+        await imageFile.readAsBytes(); // <--- قراءة الـ bytes من XFile
+
+    request.files.add(http.MultipartFile.fromBytes(
+      'file',
+      imageBytes,
+      filename: imageFile.name, // استخدام filename من XFile
+      contentType: MediaType(
+          'image', 'jpeg'), // تحديد النوع هنا (يمكنك تغييره حسب نوع الصورة)
+    ));
+
+    print('AI Model Request: POST $uri');
+    print('AI Model Request Files: ${request.files.first.filename}');
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    print('AI Model Response Status: ${response.statusCode}');
+    print('AI Model Response Body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+      if (responseBody.containsKey('label')) {
+        return responseBody['label'];
+      } else {
+        throw Exception(
+            'Prediction label not found in response: ${response.body}');
+      }
+    } else {
+      throw Exception(
+          'Failed to get AI prediction: ${response.statusCode}, Body: ${response.body}');
+    }
+  }
+  // في ملف app_api_service.dart، داخل class ApiService { ... }
+
+// ... (بعد Local Favourites Persistence Functions) ...
+
+// ----------------------------------------------------
+// Local Disease Alerts / Notifications Persistence Functions
+// ----------------------------------------------------
+  static const String _diseaseAlertsKey = 'local_disease_alerts';
+
+// دالة لحفظ قائمة إشعارات الأمراض/التحديثات
+  static Future<void> saveLocalDiseaseAlerts(
+      List<DiseaseAlertItem> alerts) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> jsonList =
+        alerts.map((alert) => json.encode(alert.toJson())).toList();
+    await prefs.setStringList(_diseaseAlertsKey, jsonList);
+  }
+
+// دالة لجلب قائمة إشعارات الأمراض/التحديثات
+  static Future<List<DiseaseAlertItem>> getLocalDiseaseAlerts() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> jsonList = prefs.getStringList(_diseaseAlertsKey) ?? [];
+    return jsonList
+        .map((jsonString) => DiseaseAlertItem.fromJson(json.decode(jsonString)))
+        .toList();
+  }
+// ...
+// ...
 }
 
 // // lib/features/dashboard/modelus/Component/model/app_models_and_api_service.dart

@@ -1,44 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:greanspherproj/features/dashboard/modelus/chatbot/conversation.dart';
+import 'package:greanspherproj/features/dashboard/modelus/chatbot/conversation.dart'; // <--- استيراد ChatScreen
 
 class ChatBotPage extends StatelessWidget {
+  const ChatBotPage({super.key}); // أضف const constructor
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
         backgroundColor: Colors.white,
         body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 50),
+            padding: const EdgeInsets.symmetric(horizontal: 50), // أضف const
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset(
-                  "assets/images/chatscreen1.png",
+                  "assets/images/chatscreen1.png", // <--- تأكد من وجود هذه الصورة
                   width: 293,
                   height: 300,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                Text(
+                const Text(
+                  // أضف const
                   "welcome, Batoul",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 26,
                       color: Colors.black),
                 ),
-                Text(
+                const Text(
+                  // أضف const
                   "Let’s start a conversation with Rooty",
                   style: TextStyle(fontSize: 16),
                 ),
-                SizedBox(
+                const SizedBox(
+                  // أضف const
                   height: 20,
                 ),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ChatScreen()),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const ChatScreen()), // <--- التأكد من استدعاء ChatScreen
                     );
                   },
                   style: ElevatedButton.styleFrom(

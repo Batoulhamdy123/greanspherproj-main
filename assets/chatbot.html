@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voiceflow Chatbot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; height: 100vh; width: 100vw; }
+        #voiceflow-chat-container {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 100%; /* تأكد أن الشات بوت يملأ الشاشة هنا */
+            height: 100%;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+    <div id="voiceflow-chat-container"></div>
+    <script type="text/javascript">
+        // هذا هو الكود الذي أرسلته لي من Voiceflow
+        (function(d, t) {
+            var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+            v.onload = function() {
+              window.voiceflow.chat.load({
+                verify: { projectID: '6855bdda210563ada9416c94' },
+                url: 'https://general-runtime.voiceflow.com',
+                versionID: 'production',
+                voice: {
+                  url: "https://runtime-api.voiceflow.com"
+                }
+              });
+            }
+            v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+        })(document, 'script');
+    </script>
+</body>
+</html>

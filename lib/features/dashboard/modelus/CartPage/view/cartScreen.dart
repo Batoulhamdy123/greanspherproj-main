@@ -110,8 +110,6 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 
-  // في ملف cartScreen.dart
-// ...
   Future<void> _handleUpdateQuantityInCart(
       CartItem cartItem, int change) async {
     int newQuantity = cartItem.quantity + change;
@@ -148,21 +146,21 @@ class _CartScreenState extends State<CartScreen> {
       print("Error updating quantity: $e");
     }
   }
-// ...
 
-  // في ملف cartScreen.dart
+// في ملف cartScreen.dart، داخل _CartScreenState
 // ...
   Future<void> _handleRemoveFromCart(Product product) async {
-    // <--- تم تغيير التوقيع لقبول Product فقط
+    // <--- توقيع الدالة يقبل Product فقط
     try {
       // البحث عن الـ CartItem المقابل لهذا الـ Product
-      CartItem? itemToRemove = _currentCartItems
-          .firstWhereOrNull(// استخدام firstWhereOrNull لضمان الأمان
-              (item) => item.productId == product.id);
+      // نستخدم .id الخاص بالـ product اللي جاي من الـ UI، وبنقارنه بـ productId اللي في الـ CartItem
+      CartItem? itemToRemove = _currentCartItems.firstWhereOrNull(
+          (item) => item.productId == product.id); // <--- تأكد من هذا السطر
 
       if (itemToRemove != null) {
-        await _apiService.removeProductFromBasket(
-            itemToRemove.itemId); // <--- استخدام itemId من CartItem
+        await _apiService.removeProductFromBasket(itemToRemove.productId);
+        print(
+            'Attempting to remove productId: ${itemToRemove.productId} from cart.'); // <--- تأكد أنك بتمرر itemToRemove.productId
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('${product.name} removed from cart.')),
         );
@@ -171,17 +169,18 @@ class _CartScreenState extends State<CartScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(
-                  'Product not found in cart for removal: ${product.name}')),
+                  'Product not found in local cart: ${product.name}')), // رسالة أوضح
         );
         print(
-            'Error: Attempted to remove product ${product.name} but it was not found in _currentCartItems.');
+            'Error: Attempted to remove product ${product.name} but it was not found in _currentCartItems locally.');
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text('Failed to remove ${product.name} from cart: $e')),
+            content: Text(
+                'Failed to remove ${product.name} from cart: ${e.toString()}')),
       );
-      print("Error removing from cart: $e");
+      print("Error removing from cart: ${e.toString()}");
     }
   }
 // ...
