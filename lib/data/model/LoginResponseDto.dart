@@ -10,17 +10,27 @@ class LoginResponseDto extends LoginResponseEntity {
     super.message,
   });
 
+  // ...
   LoginResponseDto.fromJson(dynamic json) {
     data = json['data'] != null ? DataResponseDto.fromJson(json['data']) : null;
     statusCode = json['statusCode'];
     succeeded = json['succeeded'];
     message = json['message'];
+
+    // إذا كان تسجيل الدخول ناجحاً ولديك توكن واسم مستخدم، قم بحفظهم
     if (succeeded == true && data?.token != null && data?.userName != null) {
+      // <--- تأكد من هذا الشرط
       DateTime expiryDate = data!.refreshTokenExpiration != null
           ? DateTime.tryParse(data!.refreshTokenExpiration!) ??
               DateTime.now().add(const Duration(hours: 24))
           : DateTime.now().add(const Duration(hours: 24));
-      ApiService.saveUserAuthToken(data!.token!, expiryDate, data!.userName!);
+
+      // حفظ الـ Token الجديد واسم المستخدم في shared_preferences
+      ApiService.saveUserAuthToken(
+          data!.token!, expiryDate, data!.userName!); // <--- تأكد من هذا السطر
+      print("User Token and Name from login response saved successfully!");
+    } else {
+      print("Login response indicates failure or missing token/username.");
     }
   }
 }

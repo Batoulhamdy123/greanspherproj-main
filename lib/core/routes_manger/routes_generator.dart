@@ -28,7 +28,7 @@ class RouteGenerator {
       case Routes.splashScreenRoute:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       default:
-        return unDefinedRoute();
+        return MaterialPageRoute(builder: (_) => const LoginScreen());
     }
   }
 

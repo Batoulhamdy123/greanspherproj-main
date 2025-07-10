@@ -15,6 +15,7 @@ import 'package:greanspherproj/features/dashboard/modelus/Setttingpagess/Account
 import 'package:greanspherproj/features/dashboard/modelus/Setttingpagess/ChangeEmailPage/view/ChangeEmailPage.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Setttingpagess/ChangePasswordPgd/view/ChangePaswwordPage.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Setttingpagess/SavedAddress/view/SavedAddressPage.dart';
+import 'package:greanspherproj/features/dashboard/modelus/pay/paypage.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String userName;
@@ -169,7 +170,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     buildMenuItem(context, "assets/images/List.png",
                         "Your Order", const OrdersScreen()),
                     buildMenuItem(context, "assets/images/pay.png", "Pay",
-                        const AddNewCardScreen()),
+                        const PayScreen()),
                     buildMenuItem(
                       context,
                       "assets/images/favourite.png",

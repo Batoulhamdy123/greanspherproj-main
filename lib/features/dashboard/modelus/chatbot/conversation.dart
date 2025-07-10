@@ -62,16 +62,31 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Rooty Chatbot',
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.white,
+        title:
+            const Text('Rooty ', style: TextStyle(fontWeight: FontWeight.bold)),
         leading: IconButton(
           onPressed: () => Navigator.pop(context), // زر رجوع
           icon: const Icon(Icons.arrow_back, color: Colors.green),
         ),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Image.asset(
+                'assets/images/chatbot.png', // <--- تأكد من وجود هذه الصورة
+                width: 70,
+                height: 70,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(12),

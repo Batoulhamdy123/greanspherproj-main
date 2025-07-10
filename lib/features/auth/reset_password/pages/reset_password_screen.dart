@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:greanspherproj/core/widget/validation.dart';
+import 'package:greanspherproj/features/auth/login/view/pages/login_screen.dart';
 import 'package:greanspherproj/features/auth/reset_password/controller/cubit/reset_password_state.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Component/view/ComponentPage.dart';
+import 'package:greanspherproj/features/dashboard/view/dashboardpage.dart';
 
 import '../../../../../core/widget/custom_text_field.dart';
 import '../../../../../core/widget/imageforget.dart';
 import '../../../../core/widget/dialog_utils.dart';
 import '../controller/cubit/reset_password_cubit.dart';
 
-class ResetPasswordScreen extends StatelessWidget {
+class ResetPasswordScreen extends StatefulWidget {
   final String email;
-  final String code;
+  final dynamic code;
 
   const ResetPasswordScreen({
     super.key,
@@ -17,6 +21,13 @@ class ResetPasswordScreen extends StatelessWidget {
     required this.code,
   });
 
+  @override
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+}
+
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+  bool _obscureText = true;
+  bool _obscureText2 = true;
   @override
   Widget build(BuildContext context) {
     return BlocListener<ResetPasswordCubit, ResetPasswordState>(
@@ -39,13 +50,13 @@ class ResetPasswordScreen extends StatelessWidget {
             title: "success",
             message: "The operation was completed successfully..",
           );
-          // Future.delayed(const Duration(seconds: 1)).then((_) {
-          //   Navigator.push(
-          //     context,
-          //     MaterialPageRoute(builder: (context) => Verification()),
-          //   );
-          //   // Navigator.pushReplacementNamed(context, Verification() as String);
-          // });
+          Future.delayed(const Duration(seconds: 1)).then((_) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LoginScreen()),
+            );
+            // Navigator.pushReplacementNamed(context, Verification() as String);
+          });
         }
       },
       child: Scaffold(
@@ -83,22 +94,62 @@ class ResetPasswordScreen extends StatelessWidget {
                 ),
               ),
               TextFormFieldItem(
-                label: "Password",
-                controller: ResetPasswordCubit.get(context).newPassword,
-              ),
+                  label: "Password",
+                  controller: ResetPasswordCubit.get(context).newPassword,
+                  prefixIcon: const Icon(Icons.lock),
+                  keyboardType: TextInputType.name,
+                  validator: MyValidation.validatePassword,
+                  edgeInsetsGeometry:
+                      const EdgeInsets.symmetric(vertical: 16.0),
+                  obscureText: _obscureText,
+                  obscuringCharacter: '*',
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    },
+                  )),
               const SizedBox(
                 height: 10,
               ),
               TextFormFieldItem(
                   label: "Confirm Password ",
-                  controller: ResetPasswordCubit.get(context).confirmPassword),
+                  controller: ResetPasswordCubit.get(context).confirmPassword,
+                  prefixIcon: const Icon(Icons.lock),
+                  keyboardType: TextInputType.name,
+                  validator: MyValidation.validatePassword,
+                  edgeInsetsGeometry:
+                      const EdgeInsets.symmetric(vertical: 16.0),
+                  obscureText: _obscureText,
+                  obscuringCharacter: '*',
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = _obscureText2;
+                      });
+                    },
+                  )),
               const SizedBox(
                 height: 40,
               ),
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    ResetPasswordCubit.get(context).resetPassword(email, code);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const LoginScreen()), // <--- التأكد من استدعاء ChatScreen
+                    );
+                    //ResetPasswordCubit.get(context)
+                    // .resetPassword(widget.email, widget.code);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,

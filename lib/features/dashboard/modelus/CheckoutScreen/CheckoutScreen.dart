@@ -117,7 +117,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               image: const DecorationImage(
                                 // ضع هنا مسار صورة تحاكي الخريطة
                                 image: AssetImage(
-                                    'assets/images/mappimage.png'), // <--- تأكد من وجود هذه الصورة
+                                    'assets/images/mappimage (2).png'), // <--- تأكد من وجود هذه الصورة
                                 fit: BoxFit.cover,
                               ),
                             ),

@@ -1489,6 +1489,7 @@ class ApiService {
       throw Exception('Failed to create online order: ${response.statusCode}');
     }
   }
+
   // في ملف app_api_service.dart، داخل class ApiService { ... }
 
 // ----------------------------------------------------
@@ -1572,6 +1573,109 @@ class ApiService {
         .map((jsonString) => DiseaseAlertItem.fromJson(json.decode(jsonString)))
         .toList();
   }
+  // في ملف app_api_service.dart، داخل class ApiService { ... }
+
+// ... (بعد دالة editUserProfile) ...
+
+// Change User Email (POST /api/v1/users/change-email)
+  Future<void> changeUserEmail({
+    required String newEmail,
+    required String currentPassword,
+  }) async {
+    final uri = Uri.parse('$baseUrl/api/v1/users/change-email');
+    final Map<String, dynamic> body = {
+      "newEmail": newEmail,
+      "currentPassword": currentPassword,
+    };
+
+    print('API Request: POST Change Email $uri, Body: ${json.encode(body)}');
+    print('Request Headers: ${await _headers}');
+
+    final response = await http.post(
+      uri,
+      headers: await _headers,
+      body: json.encode(body),
+    );
+
+    print('API Response Status (Change Email): ${response.statusCode}');
+    print('API Response Body (Change Email): ${response.body}');
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+      throw Exception(responseBody['message'] ??
+          'Failed to change email: ${response.statusCode}');
+    }
+  }
+
+// Verify Change Email (POST /api/v1/users/verify-change-email)
+  Future<String> verifyChangeEmail({
+    // ترجع الـ newEmail لو نجح
+    required String code,
+  }) async {
+    final uri = Uri.parse('$baseUrl/api/v1/users/verify-change-email');
+    final Map<String, dynamic> body = {
+      "code": code,
+    };
+
+    print(
+        'API Request: POST Verify Change Email $uri, Body: ${json.encode(body)}');
+    print('Request Headers: ${await _headers}');
+
+    final response = await http.post(
+      uri,
+      headers: await _headers,
+      body: json.encode(body),
+    );
+
+    print('API Response Status (Verify Change Email): ${response.statusCode}');
+    print('API Response Body (Verify Change Email): ${response.body}');
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+      if (responseBody['isSuccess']) {
+        return responseBody['value']['newEmail'] ??
+            'Verification successful'; // ترجع الـ newEmail لو موجود
+      } else {
+        throw Exception(responseBody['message'] ??
+            'Failed to verify email: ${response.statusCode}');
+      }
+    } else {
+      throw Exception('Failed to verify email: ${response.statusCode}');
+    }
+  }
+
+// Change User Password (POST /api/v1/users/change-password)
+  Future<void> changeUserPassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmNewPassword,
+  }) async {
+    final uri = Uri.parse('$baseUrl/api/v1/users/change-password');
+    final Map<String, dynamic> body = {
+      "currentPassword": currentPassword,
+      "newPassword": newPassword,
+      "confirmNewPassword": confirmNewPassword,
+    };
+
+    print('API Request: POST Change Password $uri, Body: ${json.encode(body)}');
+    print('Request Headers: ${await _headers}');
+
+    final response = await http.post(
+      uri,
+      headers: await _headers,
+      body: json.encode(body),
+    );
+
+    print('API Response Status (Change Password): ${response.statusCode}');
+    print('API Response Body (Change Password): ${response.body}');
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+      throw Exception(responseBody['message'] ??
+          'Failed to change password: ${response.statusCode}');
+    }
+  }
+
 // ...
 // ...
 }

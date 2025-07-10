@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:greanspherproj/core/resource/context.dart';
+import 'package:greanspherproj/features/auth/login/view/pages/login_screen.dart';
+import 'package:greanspherproj/features/auth/reset_password/pages/reset_password_screen.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Component/view/ComponentPage.dart';
 import 'package:greanspherproj/features/dashboard/modelus/Home/view/home_screen.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Setttingpagess/ChangeEmailPage/view/ChangeEmailPage.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../../../../../core/widget/dialog_utils.dart';
 import '../../../../../core/widget/imageforget.dart';
 import '../../controller/cubit/confirm_email_code_cubit.dart';
 import '../../controller/cubit/confirm_email_code_state.dart';
+import 'dart:async';
 
-class ConfirmEmailScreen extends StatelessWidget {
+class ConfirmEmailScreen extends StatefulWidget {
   final String email;
   final String provider;
   final String fromScreen;
@@ -22,7 +26,35 @@ class ConfirmEmailScreen extends StatelessWidget {
     required this.fromScreen,
   });
 
-  int counter = 60;
+  @override
+  State<ConfirmEmailScreen> createState() => _ConfirmEmailScreenState();
+}
+
+class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
+  int _counter = 60;
+  Timer? _timer;
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _counter = 60;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_counter > 0) {
+          _counter--;
+        } else {
+          _timer?.cancel();
+        }
+      });
+    });
+  }
+
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +82,23 @@ class ConfirmEmailScreen extends StatelessWidget {
                 "The confirmation email code has been sent to your email successfully. Check your inbox.",
           );
           Future.delayed(const Duration(seconds: 1)).then((_) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ComponentPage()),
-            );
-            // Navigator.pushReplacementNamed(context, Verification() as String);
+            if (widget.fromScreen == 'ForgetPasswordScreen') {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ResetPasswordScreen(
+                    email: widget.email,
+                    code: ConfirmEmailCodeCubit.get(context).pinCodeController,
+                  ),
+                ),
+              );
+            } else if (widget.fromScreen == 'SendConfirmEmailScreen') {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                (route) => false,
+              );
+            }
           });
         }
       },
@@ -130,7 +174,8 @@ class ConfirmEmailScreen extends StatelessWidget {
                         inactiveFillColor: Colors.white,
                         inactiveColor: Colors.green,
                         activeColor: Colors.green,
-                        selectedFillColor: Colors.black,
+                        selectedFillColor:
+                            const Color.fromARGB(255, 241, 238, 238),
                         fieldOuterPadding:
                             EdgeInsets.only(right: context.width / 30)),
                     cursorColor: Colors.white,
@@ -144,7 +189,7 @@ class ConfirmEmailScreen extends StatelessWidget {
                     boxShadows: const [
                       BoxShadow(
                         offset: Offset(0, 1),
-                        color: Colors.black12,
+                        color: Color.fromARGB(243, 225, 222, 222),
                         blurRadius: 20,
                       )
                     ],
@@ -174,7 +219,7 @@ class ConfirmEmailScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        "00: $counter sec",
+                        "00: ${_counter.toString().padLeft(2, '0')} sec",
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
@@ -203,7 +248,7 @@ class ConfirmEmailScreen extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () {
                       ConfirmEmailCodeCubit.get(context)
-                          .sendConfirmEmailCode(provider, email);
+                          .sendConfirmEmailCode(widget.provider, widget.email);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
@@ -225,7 +270,14 @@ class ConfirmEmailScreen extends StatelessWidget {
                 ),
                 Center(
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const ChangeEmailScreen()), // <--- التأكد من استدعاء ChatScreen
+                      );
+                    },
                     child: const Text(
                       "Change Email ",
                       style: TextStyle(

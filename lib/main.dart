@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:greanspherproj/di/di.dart';
 import 'package:greanspherproj/features/auth/register/controller/cubit/signupcubit_cubit.dart';
+import 'package:greanspherproj/features/dashboard/modelus/Component/model/app_models_and_api_service.dart';
 
 import 'core/bloc_observer/bloc_observer.dart';
 import 'core/routes_manger/routes.dart';
@@ -17,7 +18,7 @@ import 'features/auth/send_confirm_email_code/controller/cubit/send_confirm_emai
 void main() {
   configureDependencies();
   Bloc.observer = MyBlocObserver();
-
+  ApiService.clearUserAuthToken();
   runApp(DevicePreview(
     enabled: true,
     builder: (context) => MultiBlocProvider(

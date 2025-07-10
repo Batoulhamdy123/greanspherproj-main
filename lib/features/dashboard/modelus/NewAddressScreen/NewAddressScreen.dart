@@ -98,7 +98,7 @@ class _NewAddressScreenState extends State<NewAddressScreen> {
                   border: Border.all(color: Colors.grey),
                   image: const DecorationImage(
                     image: AssetImage(
-                        'assets/images/Basemap image.png'), // استخدم صورة الخريطة الوهمية
+                        'assets/images/mappimage (2).png'), // استخدم صورة الخريطة الوهمية
                     fit: BoxFit.cover,
                   ),
                 ),
