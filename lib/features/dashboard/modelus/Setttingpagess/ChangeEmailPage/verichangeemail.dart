@@ -204,7 +204,16 @@ class _VerifyChangeEmailScreenState extends State<VerifyChangeEmailScreen> {
             const SizedBox(height: 5),
             Center(
               child: ElevatedButton(
-                onPressed: _verifyCode, // <--- ربط بزر Verify Code
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SettingsScreen(
+                            onProfileUpdated:
+                                () {})), // <--- التأكد من استدعاء ChatScreen
+                  );
+                },
+                // <--- ربط بزر Verify Code
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   padding:
